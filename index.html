@@ -187,6 +187,9 @@ input[type=range]:focus-visible::-webkit-slider-thumb{border-color:var(--mint)}
 .pvtog{display:none}
 .tools .spk{display:inline-flex;align-items:center;gap:6px}
 .tools .spk i{width:8px;height:8px;border-radius:50%;background:var(--blue);flex:none}
+.tools .spk[hidden]{display:none}
+.fld.sptabs{display:flex;flex-direction:row;flex-wrap:nowrap;gap:6px;align-items:stretch}.sptabs .seg{flex:1}
+.spadd{flex:none;width:34px;border:1px solid var(--line2);background:var(--panel);border-radius:var(--r);color:var(--blue);font-size:16px;cursor:pointer}.spadd:disabled{opacity:.35;cursor:default}
 .tools .spk span{max-width:7em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .selpop{position:fixed;z-index:1000;background:var(--panel);border:1px solid var(--line2);border-top:2px solid var(--navy);border-radius:var(--r);box-shadow:0 10px 26px rgba(13,42,74,.2);padding:6px;display:flex;flex-direction:column;gap:5px;max-width:calc(100vw - 16px)}
 .selpop[hidden]{display:none}
@@ -266,7 +269,7 @@ input[type=range]:focus-visible::-webkit-slider-thumb{border-color:var(--mint)}
   <details open id="secText"><summary>글<em>TEXT</em></summary>
     <div class="fld rich">
       <div class="tools">
-        <button type="button" class="spk" data-pre="1" title="이 줄을 화자 1 대사로"><i></i><span>화자 1</span></button><button type="button" class="spk" data-pre="2" title="이 줄을 화자 2 대사로"><i></i><span>화자 2</span></button><button type="button" class="spk" data-pre="3" title="이 줄을 화자 3 대사로"><i></i><span>화자 3</span></button><button type="button" class="spk" data-pre="4" title="이 줄을 화자 4 대사로"><i></i><span>화자 4</span></button>
+        <button type="button" class="spk" data-pre="1" title="이 줄을 화자 1 대사로"><i></i><span>화자 1</span></button><button type="button" class="spk" data-pre="2" title="이 줄을 화자 2 대사로"><i></i><span>화자 2</span></button><button type="button" class="spk" data-pre="3" title="이 줄을 화자 3 대사로"><i></i><span>화자 3</span></button><button type="button" class="spk" data-pre="4" title="이 줄을 화자 4 대사로"><i></i><span>화자 4</span></button><button type="button" class="spk" data-pre="5" title="이 줄을 화자 5 대사로"><i></i><span>화자 5</span></button><button type="button" class="spk" data-pre="6" title="이 줄을 화자 6 대사로"><i></i><span>화자 6</span></button>
         <button type="button" data-pre="s" title="가운데 알림 줄">◎ 알림</button><button type="button" data-pre="-" title="바로 위 대사의 번역 줄">↳ 번역</button><button type="button" data-pre=" " title="체크리스트 줄 (한 번 더 누르면 체크)">☐ 체크</button>
         <button type="button" id="expand" title="입력칸 넓게">⤢ 넓게</button>
       </div>
@@ -286,7 +289,7 @@ input[type=range]:focus-visible::-webkit-slider-thumb{border-color:var(--mint)}
       <label class="tg dlg-only"><input type="checkbox" data-k="dlgItalic"><i></i>대사 기울임</label>
     </div>
       <div class="fld" style="margin:10px 0 4px"><span>[[강조]] 표시</span><div class="seg" data-k="accStyle" data-opts="color=글자색,under=굵은 밑줄,box=색 박스"></div></div>
-        <p class="hint">글자를 드래그하면 꾸미기 메뉴(굵게·기울임·형광펜·강조·글자색·인용·들여쓰기)가 떠요. 직접 쓸 때는 <code>**굵게**</code> <code>*기울임*</code> <code>==형광펜==</code> <code>[[강조]]</code> <code>{a}글자색{/}</code>(a 강조색 · b 파랑 · g 초록 · m 흐린색 · <code>{#ff0000}</code> 직접) · 줄 맨 앞 <code>&gt; </code> 인용, <code>[&gt;]</code> 들여쓰기(<code>[&gt;&gt;]</code> 두 칸), <code>[ ]</code> 체크 칸, <code>[x]</code> 체크 완료, <code>[1]</code>~<code>[4]</code> 화자 대사, <code>[s]</code> 알림, <code>[-]</code> 번역 줄 · 기호를 글자 그대로 쓰려면 앞에 <code>\</code></p>
+        <p class="hint">글자를 드래그하면 꾸미기 메뉴(굵게·기울임·형광펜·강조·글자색·인용·들여쓰기)가 떠요. 직접 쓸 때는 <code>**굵게**</code> <code>*기울임*</code> <code>==형광펜==</code> <code>[[강조]]</code> <code>{a}글자색{/}</code>(a 강조색 · b 파랑 · g 초록 · m 흐린색 · <code>{#ff0000}</code> 직접) · 줄 맨 앞 <code>&gt; </code> 인용, <code>[&gt;]</code> 들여쓰기(<code>[&gt;&gt;]</code> 두 칸), <code>[ ]</code> 체크 칸, <code>[x]</code> 체크 완료, <code>[1]</code>~<code>[6]</code> 화자 대사, <code>[s]</code> 알림, <code>[-]</code> 번역 줄 · 기호를 글자 그대로 쓰려면 앞에 <code>\</code></p>
     </details>
     <details class="sd" id="srcBox"><summary>출처</summary>
       <div class="tgs" style="margin:0 0 10px"><label class="tg"><input type="checkbox" data-k="srcOn"><i></i>출처 표시</label></div>
@@ -367,9 +370,9 @@ input[type=range]:focus-visible::-webkit-slider-thumb{border-color:var(--mint)}
 
   <details><summary>채팅<em>CHAT</em></summary>
     <div class="fld"><span>채팅 모양</span><div class="seg" data-k="chatStyle" data-opts="bubble=프로필 채팅,bar=인용 바,script=대본,log=단말기 로그,plain=따옴표"></div></div>
-    <p class="sub" style="margin-top:0">본문 줄 앞에 <code>[1]</code>~<code>[4]</code>를 붙이면 그 화자의 대사가 돼요. <button type="button" class="linkbtn" id="chatSample">예시 대화 넣기</button></p>
+    <p class="sub" style="margin-top:0">본문 줄 앞에 <code>[1]</code>~<code>[6]</code>을 붙이면 그 화자의 대사가 돼요. 화자는 <b>+</b>로 6명까지 늘릴 수 있어요. <button type="button" class="linkbtn" id="chatSample">예시 대화 넣기</button></p>
     <details class="sd" open><summary>화자 설정</summary>
-      <div class="fld"><div class="seg" id="spTabs"><button type="button" data-i="0">P1</button><button type="button" data-i="1">P2</button><button type="button" data-i="2">P3</button><button type="button" data-i="3">P4</button></div></div>
+      <div class="fld sptabs"><div class="seg" id="spTabs"></div><button type="button" class="spadd" id="spAdd" title="화자 추가 (최대 6명)">+</button><button type="button" class="spadd" id="spDel" title="마지막 화자 빼기">−</button></div>
     <div class="spbox">
       <div class="row2">
         <label class="fld"><span>이름</span><input data-sp="name" placeholder="이름"></label>
@@ -538,8 +541,10 @@ const DEF = {
   ],
   srcOn:true, chatStyle:'bubble', sysScale:1, sysTone:'auto', sysColor:'#e0102a', logStart:'23:41:07', logTime:true, logBadge:'fill', logQuote:false, scriptGut:5.5, scriptColor:false, scriptQuote:false, trParen:true, chatScale:0.9, chatAv:1.6, chatGap:0.9,
   sp:[{name:'화자 1',side:'left',bub:'#e6eefb',txt:'#0d2a4a',bar:'#2f6fd6'},{name:'화자 2',side:'right',bub:'#123a6b',txt:'#ffffff',bar:'#3cc8b0'},
-      {name:'화자 3',side:'left',bub:'#e3f7f2',txt:'#0f3b46',bar:'#1f9e8a'},{name:'화자 4',side:'right',bub:'#dcecfa',txt:'#0d2a4a',bar:'#8fc3ea'}],
-  av:[null,null,null,null],
+      {name:'화자 3',side:'left',bub:'#e3f7f2',txt:'#0f3b46',bar:'#1f9e8a'},{name:'화자 4',side:'right',bub:'#dcecfa',txt:'#0d2a4a',bar:'#8fc3ea'},
+      {name:'화자 5',side:'left',bub:'#eef3f8',txt:'#0d2a4a',bar:'#0d2a4a'},{name:'화자 6',side:'right',bub:'#e8f8f5',txt:'#0d2a4a',bar:'#6fd8c6'}],
+  spN:4,
+  av:[null,null,null,null,null,null],
   usePhoto:true, deco:'none', ft:{}, sign:null, signTone:'accent', signColor:'#2f6fd6', layout:'basic',
   photoPos:'top', photoW:0.4, photoH:520, photoGap:64, photoInset:0, photoLine:false, photoFit:'cover', photoFx:0.5, photoFy:0.5, photoZoom:1, photoR:0,
   wm:'', wmPos:'br', wmAlpha:0.5, wmSize:20
@@ -568,10 +573,10 @@ $('#themes').innerHTML = Object.entries(THEMES).map(([id,t]) =>
 /* ---------- layouts ---------- */
 const th = id => { const {label, ...t} = THEMES[id]; return t; };
 const SPC = {
-  aquila:    [{bub:'#e6eefb',txt:'#0d2a4a',bar:'#2f6fd6'},{bub:'#123a6b',txt:'#ffffff',bar:'#3cc8b0'},{bub:'#e3f7f2',txt:'#0f3b46',bar:'#1f9e8a'},{bub:'#dcecfa',txt:'#0d2a4a',bar:'#8fc3ea'}],
-  missLight: [{bub:'#eef0f3',txt:'#111111',bar:'#1f4b3a'},{bub:'#111111',txt:'#ffffff',bar:'#e0102a'},{bub:'#e3e9fa',txt:'#0b2a7a',bar:'#0e3fc7'},{bub:'#efefef',txt:'#111111',bar:'#6b6e74'}],
-  aftermess: [{bub:'#1c1f1e',txt:'#ececec',bar:'#4f9a76'},{bub:'#7a1420',txt:'#ffffff',bar:'#ff3b4a'},{bub:'#18244a',txt:'#e2e9fb',bar:'#6f95ff'},{bub:'#222222',txt:'#ececec',bar:'#8f949b'}],
-  y1995:     [{bub:'#e2eff6',txt:'#1f3b2d',bar:'#8fb9d1'},{bub:'#23553e',txt:'#f8f3e6',bar:'#23553e'},{bub:'#eee6d2',txt:'#3a3a2a',bar:'#b8a67e'},{bub:'#e1ece1',txt:'#1f3b2d',bar:'#6f9a7c'}]
+  aquila:    [{bub:'#e6eefb',txt:'#0d2a4a',bar:'#2f6fd6'},{bub:'#123a6b',txt:'#ffffff',bar:'#3cc8b0'},{bub:'#e3f7f2',txt:'#0f3b46',bar:'#1f9e8a'},{bub:'#dcecfa',txt:'#0d2a4a',bar:'#8fc3ea'},{bub:'#eef3f8',txt:'#0d2a4a',bar:'#0d2a4a'},{bub:'#e8f8f5',txt:'#0d2a4a',bar:'#6fd8c6'}],
+  missLight: [{bub:'#eef0f3',txt:'#111111',bar:'#1f4b3a'},{bub:'#111111',txt:'#ffffff',bar:'#e0102a'},{bub:'#e3e9fa',txt:'#0b2a7a',bar:'#0e3fc7'},{bub:'#efefef',txt:'#111111',bar:'#6b6e74'},{bub:'#e9efeb',txt:'#13261d',bar:'#2e6b52'},{bub:'#f8e6e8',txt:'#5a0b14',bar:'#8a0f1f'}],
+  aftermess: [{bub:'#1c1f1e',txt:'#ececec',bar:'#4f9a76'},{bub:'#7a1420',txt:'#ffffff',bar:'#ff3b4a'},{bub:'#18244a',txt:'#e2e9fb',bar:'#6f95ff'},{bub:'#222222',txt:'#ececec',bar:'#8f949b'},{bub:'#15241d',txt:'#d8eee2',bar:'#2f6b52'},{bub:'#3a1418',txt:'#ffd9dd',bar:'#b0222f'}],
+  y1995:     [{bub:'#e2eff6',txt:'#1f3b2d',bar:'#8fb9d1'},{bub:'#23553e',txt:'#f8f3e6',bar:'#23553e'},{bub:'#eee6d2',txt:'#3a3a2a',bar:'#b8a67e'},{bub:'#e1ece1',txt:'#1f3b2d',bar:'#6f9a7c'},{bub:'#f3efe2',txt:'#3a3a2a',bar:'#c9a86a'},{bub:'#dfeaf2',txt:'#1f3b2d',bar:'#3f7190'}]
 };
 const LAYOUTS = [
   {grp:'TEXT ONLY'},
@@ -825,7 +830,7 @@ const quoteWrap = t => { t = t.trim(); return /^["“”「『'‘]/.test(t) ? t
 function needsGutter(){
   if (S.chatStyle !== 'script') return false;
   const texts = S.mode === 'blocks' ? S.blocks.filter(b => b.t === 'text').map(b => b.text || '') : [S.body];
-  return texts.some(t => t.split('\n').some(l => { const m = /^\[([1-4])\]/.exec(l); return m && nameOf(S.sp[+m[1] - 1]); }));
+  return texts.some(t => t.split('\n').some(l => { const m = /^\[([1-6])\]/.exec(l); return m && nameOf(S.sp[+m[1] - 1]); }));
 }
 const _mctx = document.createElement('canvas').getContext('2d');
 const TIME_RE = /^(\d{1,2}):(\d{2})(?::(\d{2}))?\s+/;
@@ -843,7 +848,7 @@ function logDims(fs){
   _mctx.font = `500 ${ts}px ${MONO}`; try { _mctx.letterSpacing = ts*0.04 + 'px'; } catch(e){}
   const timeW = S.logTime ? _mctx.measureText(secs ? '00:00:00' : '00:00').width + gap : 0;
   _mctx.font = `700 ${bs}px ${MONO}`; try { _mctx.letterSpacing = bs*0.08 + 'px'; } catch(e){}
-  const bw = Math.max(...[0, 1, 2, 3].map(n => _mctx.measureText(badgeText(n)).width)) + bs*1.6;
+  const bw = Math.max(...S.sp.slice(0, Math.max(S.spN || 4, 1)).map((_, n) => _mctx.measureText(badgeText(n)).width)) + bs*1.6;
   try { _mctx.letterSpacing = '0px'; } catch(e){}
   return {cs, ts, bs, bh: bs*1.85, timeW, badgeW: bw, colW: bw + gap, secs};
 }
@@ -856,7 +861,7 @@ function flowPlan(body, fs){
     if (!p.trim()) { if (last) blank = true; continue; }
     let m, t, ind = 0, q = p;
     const mi = /^\[(>{1,3})\]\s?/.exec(q); if (mi) { ind = mi[1].length; q = q.slice(mi[0].length); }
-    if ((m = /^\[([1-4])\]\s?/.exec(q))) t = {k: 'chat', n: +m[1] - 1};
+    if ((m = /^\[([1-6])\]\s?/.exec(q))) t = {k: 'chat', n: +m[1] - 1};
     else if ((m = /^\[-\]\s?/.exec(q))) t = {k: 'tr', n: isChat(last) ? lastSp : -1};
     else if ((m = /^\[[sS]\]\s?/.exec(q))) t = {k: 'sys'};
     else if ((m = /^\[( |x|X)\]\s?/.exec(q))) t = {k: 'todo', done: m[1] !== ' '};
@@ -2307,7 +2312,7 @@ document.addEventListener('click', ev => {
     t.setRangeText(blk.map(l => !l.trim() ? l : all ? l.replace(/^>\s?/, '') : '> ' + l).join('\n'), s0, e, 'select');
   } else {
     const tag = `[${b.dataset.pre}] `, [s0, e] = lineSpan(t);
-    t.setRangeText(v.slice(s0, e).split('\n').map(l => { const bare = l.replace(/^\[(?:>{1,3}|[1-4sS -]|x|X)\]\s?/, ''); return l.startsWith(tag.trim()) ? bare : (l.trim() ? tag + bare : l); }).join('\n'), s0, e, 'select');
+    t.setRangeText(v.slice(s0, e).split('\n').map(l => { const bare = l.replace(/^\[(?:>{1,3}|[1-6sS -]|x|X)\]\s?/, ''); return l.startsWith(tag.trim()) ? bare : (l.trim() ? tag + bare : l); }).join('\n'), s0, e, 'select');
   }
   t.dispatchEvent(new Event('input', {bubbles: true}));
   if (b.closest('#selpop')) setTimeout(showPop, 30);
@@ -2360,7 +2365,7 @@ addEventListener('scroll', () => { if (!pop.hidden) showPop(); }, true);
 $('#popColor').addEventListener('change', e => { if (!popT) return; applyColor(popT, e.target.value); popT.dispatchEvent(new Event('input', {bubbles: true})); popT.focus(); setTimeout(showPop, 30); });
 // speaker buttons show the speaker's name and colour
 function refreshSpk(){
-  $$('button.spk').forEach(b => { const n = +b.dataset.pre, sp = S.sp[n - 1]; if (!sp) return;
+  $$('button.spk').forEach(b => { const n = +b.dataset.pre, sp = S.sp[n - 1]; if (!sp) return; b.hidden = n > (S.spN || 4);
     b.querySelector('i').style.background = sp.bar; const nm = nameOf(sp) || `화자 ${n}`; const el = b.querySelector('span'); if (el.textContent !== nm) el.textContent = nm; });
 }
 $('#expand').addEventListener('click', () => { ta.classList.toggle('big'); $('#expand').textContent = ta.classList.contains('big') ? '⤡ 좁게' : '⤢ 넓게'; });
@@ -2404,7 +2409,7 @@ function newBlock(t){
           code: t === 'html' ? '<div style="border:1px solid #3cc8b0;padding:14px 18px;border-radius:6px">\n  <b>HTML 블록</b><br>스타일은 코드 안에 직접 적어요.\n</div>' : ''};
 }
 const bseg = (f, cur, opts) => `<div class="seg" data-bseg="${f}">${opts.map(([v, l]) => `<button type="button" data-v="${v}" class="${String(cur ?? '') === v ? 'on' : ''}">${l}</button>`).join('')}</div>`;
-const RICH = `<div class="tools"><button type="button" class="spk" data-pre="1" title="이 줄을 화자 1 대사로"><i></i><span>화자 1</span></button><button type="button" class="spk" data-pre="2" title="이 줄을 화자 2 대사로"><i></i><span>화자 2</span></button><button type="button" class="spk" data-pre="3" title="이 줄을 화자 3 대사로"><i></i><span>화자 3</span></button><button type="button" class="spk" data-pre="4" title="이 줄을 화자 4 대사로"><i></i><span>화자 4</span></button><button type="button" data-pre="s" title="가운데 알림 줄">◎ 알림</button><button type="button" data-pre="-" title="바로 위 대사의 번역 줄">↳ 번역</button><button type="button" data-pre=" " title="체크리스트 줄 (한 번 더 누르면 체크)">☐ 체크</button></div>`;
+const RICH = `<div class="tools"><button type="button" class="spk" data-pre="1" title="이 줄을 화자 1 대사로"><i></i><span>화자 1</span></button><button type="button" class="spk" data-pre="2" title="이 줄을 화자 2 대사로"><i></i><span>화자 2</span></button><button type="button" class="spk" data-pre="3" title="이 줄을 화자 3 대사로"><i></i><span>화자 3</span></button><button type="button" class="spk" data-pre="4" title="이 줄을 화자 4 대사로"><i></i><span>화자 4</span></button><button type="button" class="spk" data-pre="5" title="이 줄을 화자 5 대사로"><i></i><span>화자 5</span></button><button type="button" class="spk" data-pre="6" title="이 줄을 화자 6 대사로"><i></i><span>화자 6</span></button><button type="button" data-pre="s" title="가운데 알림 줄">◎ 알림</button><button type="button" data-pre="-" title="바로 위 대사의 번역 줄">↳ 번역</button><button type="button" data-pre=" " title="체크리스트 줄 (한 번 더 누르면 체크)">☐ 체크</button></div>`;
 function blockBody(b){
   const A3 = [['', '기본'], ['left', '왼쪽'], ['center', '가운데'], ['right', '오른쪽']];
   if (b.t === 'title' || b.t === 'sub') return `
@@ -2481,6 +2486,10 @@ $$('[data-add]').forEach(b => b.addEventListener('click', () => {
 /* ---------- chat speakers ---------- */
 let spI = 0;
 function syncSp(){
+  const N = Math.max(1, Math.min(6, S.spN || 4)), tb = $('#spTabs');
+  if (spI >= N) spI = N - 1;
+  if (tb.children.length !== N) tb.innerHTML = Array.from({length: N}, (_, i) => `<button type="button" data-i="${i}">P${i + 1}</button>`).join('');
+  $('#spAdd').disabled = N >= 6; $('#spDel').disabled = N <= 1;
   const sp = S.sp[spI];
   $$('#spTabs button').forEach(b => b.classList.toggle('on', +b.dataset.i === spI));
   $$('#spSide button').forEach(b => b.classList.toggle('on', b.dataset.v === sp.side));
@@ -2489,6 +2498,8 @@ function syncSp(){
   pv.style.backgroundImage = S.av[spI] ? `url(${S.av[spI]})` : 'none';
   pv.style.backgroundColor = sp.bar; pv.textContent = S.av[spI] ? '' : [...(nameOf(sp) || String(spI+1))][0];
 }
+$('#spAdd').addEventListener('click', () => { S.spN = Math.min(6, (S.spN || 4) + 1); spI = S.spN - 1; syncSp(); schedule(); });
+$('#spDel').addEventListener('click', () => { S.spN = Math.max(1, (S.spN || 4) - 1); syncSp(); schedule(); });
 $('#spTabs').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; spI = +b.dataset.i; syncSp(); });
 $('#spSide').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; S.sp[spI].side = b.dataset.v; syncSp(); schedule(); });
 $$('[data-sp]').forEach(el => el.addEventListener('input', () => { S.sp[spI][el.dataset.sp] = el.value; syncSp(); schedule(); }));
