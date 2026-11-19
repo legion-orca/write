@@ -185,6 +185,21 @@ input[type=range]:focus-visible::-webkit-slider-thumb{border-color:var(--mint)}
 .lay svg{height:32px!important}
 .lays .grp{margin:4px 0 0!important;font-size:9.5px!important}
 .pvtog{display:none}
+.tools .spk{display:inline-flex;align-items:center;gap:6px}
+.tools .spk i{width:8px;height:8px;border-radius:50%;background:var(--blue);flex:none}
+.tools .spk span{max-width:7em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.selpop{position:fixed;z-index:1000;background:var(--panel);border:1px solid var(--line2);border-top:2px solid var(--navy);border-radius:var(--r);box-shadow:0 10px 26px rgba(13,42,74,.2);padding:6px;display:flex;flex-direction:column;gap:5px;max-width:calc(100vw - 16px)}
+.selpop[hidden]{display:none}
+.selpop .sp-row{display:flex;flex-wrap:wrap;align-items:center;gap:4px}
+.selpop button{border:1px solid var(--line2);background:var(--panel);border-radius:var(--r);padding:5px 9px;cursor:pointer;line-height:1.2;color:var(--navy);font-size:13px}
+.selpop button:hover{border-color:var(--blue);background:var(--accs)}
+.selpop .mk{background:linear-gradient(transparent 45%,#b9efe3 45%)}
+.selpop .ac{color:var(--blue);font-weight:700}
+.selpop .sp-l{font:500 10px var(--mono);letter-spacing:.08em;color:var(--mut);margin:0 3px 0 2px;min-width:3.6em}
+.selpop .sw-b{width:24px;height:24px;padding:0;border-radius:50%;border:2px solid var(--panel);box-shadow:0 0 0 1px var(--line2);position:relative;overflow:hidden;cursor:pointer;display:inline-block}
+.selpop .sw-c{background:conic-gradient(#e0102a,#f5b400,#3cc8b0,#2f6fd6,#8a4fd6,#e0102a)}
+.selpop .sw-c input{position:absolute;inset:-6px;opacity:0;cursor:pointer;width:40px;height:40px}
+@media (pointer:coarse){.selpop button{padding:8px 11px;font-size:14px}.selpop .sw-b{width:30px;height:30px}}
 
 /* phones: bigger preview, compact save bar, touch-sized controls, no zoom-on-focus */
 @media (max-width:860px){
@@ -251,17 +266,8 @@ input[type=range]:focus-visible::-webkit-slider-thumb{border-color:var(--mint)}
   <details open id="secText"><summary>글<em>TEXT</em></summary>
     <div class="fld rich">
       <div class="tools">
-        <button type="button" data-wrap="**" title="굵게"><b>B</b></button>
-        <button type="button" data-wrap="*" title="기울임"><i>I</i></button>
-        <button type="button" data-wrap="==" title="형광펜"><span class="mk">형광펜</span></button>
-        <button type="button" data-wrap="[[" data-wrap2="]]" title="강조 색"><span class="ac">강조</span></button>
-        <button type="button" data-quote title="인용 문단">▏인용</button>
-        <button type="button" data-pre="1" title="화자 1 대사">[1]</button>
-        <button type="button" data-pre="2" title="화자 2 대사">[2]</button>
-        <button type="button" data-pre="3" title="화자 3 대사">[3]</button>
-        <button type="button" data-pre="4" title="화자 4 대사">[4]</button>
-        <button type="button" data-pre="s" title="가운데 알림 문구">[s]</button>
-        <button type="button" data-pre="-" title="바로 위 대사의 번역 줄">[-]</button>
+        <button type="button" class="spk" data-pre="1" title="이 줄을 화자 1 대사로"><i></i><span>화자 1</span></button><button type="button" class="spk" data-pre="2" title="이 줄을 화자 2 대사로"><i></i><span>화자 2</span></button><button type="button" class="spk" data-pre="3" title="이 줄을 화자 3 대사로"><i></i><span>화자 3</span></button><button type="button" class="spk" data-pre="4" title="이 줄을 화자 4 대사로"><i></i><span>화자 4</span></button>
+        <button type="button" data-pre="s" title="가운데 알림 줄">◎ 알림</button><button type="button" data-pre="-" title="바로 위 대사의 번역 줄">↳ 번역</button><button type="button" data-pre=" " title="체크리스트 줄 (한 번 더 누르면 체크)">☐ 체크</button>
         <button type="button" id="expand" title="입력칸 넓게">⤢ 넓게</button>
       </div>
       <textarea id="body" data-k="body" rows="9" placeholder="여기에 발췌할 글을 붙여 넣어요."></textarea>
@@ -280,7 +286,7 @@ input[type=range]:focus-visible::-webkit-slider-thumb{border-color:var(--mint)}
       <label class="tg dlg-only"><input type="checkbox" data-k="dlgItalic"><i></i>대사 기울임</label>
     </div>
       <div class="fld" style="margin:10px 0 4px"><span>[[강조]] 표시</span><div class="seg" data-k="accStyle" data-opts="color=글자색,under=굵은 밑줄,box=색 박스"></div></div>
-        <p class="hint">문장을 드래그하고 버튼을 누르면 표시가 붙어요. <code>**굵게**</code> <code>*기울임*</code> <code>==형광펜==</code> <code>[[강조]]</code> · 줄 맨 앞 <code>&gt; </code>는 인용 문단 · <code>[1]</code>~<code>[4]</code>는 화자 대사, <code>[s]</code>는 가운데 알림, <code>[-]</code>는 바로 위 대사의 번역 줄 · 기호를 글자 그대로 쓰려면 앞에 <code>\</code></p>
+        <p class="hint">글자를 드래그하면 꾸미기 메뉴(굵게·기울임·형광펜·강조·글자색·인용·들여쓰기)가 떠요. 직접 쓸 때는 <code>**굵게**</code> <code>*기울임*</code> <code>==형광펜==</code> <code>[[강조]]</code> <code>{a}글자색{/}</code>(a 강조색 · b 파랑 · g 초록 · m 흐린색 · <code>{#ff0000}</code> 직접) · 줄 맨 앞 <code>&gt; </code> 인용, <code>[&gt;]</code> 들여쓰기(<code>[&gt;&gt;]</code> 두 칸), <code>[ ]</code> 체크 칸, <code>[x]</code> 체크 완료, <code>[1]</code>~<code>[4]</code> 화자 대사, <code>[s]</code> 알림, <code>[-]</code> 번역 줄 · 기호를 글자 그대로 쓰려면 앞에 <code>\</code></p>
     </details>
     <details class="sd" id="srcBox"><summary>출처</summary>
       <div class="tgs" style="margin:0 0 10px"><label class="tg"><input type="checkbox" data-k="srcOn"><i></i>출처 표시</label></div>
@@ -388,6 +394,12 @@ input[type=range]:focus-visible::-webkit-slider-thumb{border-color:var(--mint)}
         <label class="tg"><input type="checkbox" data-k="scriptQuote"><i></i>대사 따옴표</label></div>
       <div class="tgs"><label class="tg"><input type="checkbox" data-k="trParen"><i></i>번역 줄 ( )로 감싸기</label></div>
     </details>
+    <details class="sd"><summary>알림 줄 ([s])</summary>
+      <div class="rng" data-range="sysScale|알림 글자 크기|0.6|1.8|0.02|x"></div>
+      <div class="fld"><span>알림 색</span><div class="seg" data-k="sysTone" data-opts="auto=기본,accent=강조색,fg=글자색,custom=직접"></div></div>
+      <div class="fld sys-custom"><span>직접 고른 색</span><label class="sw"><input type="color" data-k="sysColor"><span>알림</span></label></div>
+      <p class="sub" style="margin:4px 0 0">색을 바꾸면 말풍선 모양 알림의 바탕도 그 색으로 옅게 깔려요.</p>
+    </details>
     <details class="sd chat-log" open><summary>단말기 로그</summary>
       <div class="row2">
         <label class="fld"><span>시작 시각</span><input data-k="logStart" placeholder="23:41:07"></label>
@@ -454,6 +466,23 @@ input[type=range]:focus-visible::-webkit-slider-thumb{border-color:var(--mint)}
 </section>
 </main>
 <div class="toast" id="toast"></div>
+<div class="selpop" id="selpop" hidden>
+  <div class="sp-row">
+    <button type="button" data-wrap="**" title="굵게"><b>B</b></button><button type="button" data-wrap="*" title="기울임"><i>I</i></button>
+    <button type="button" data-wrap="==" title="형광펜"><span class="mk">형광펜</span></button><button type="button" data-wrap="[[" data-wrap2="]]" title="강조"><span class="ac">강조</span></button>
+    <button type="button" data-strip title="고른 글자의 꾸밈 지우기">지우기</button>
+  </div>
+  <div class="sp-row">
+    <span class="sp-l">글자색</span>
+    <button type="button" class="sw-b" data-col="a" title="강조색"></button><button type="button" class="sw-b" data-col="b" title="파랑(대사색)"></button>
+    <button type="button" class="sw-b" data-col="g" title="초록(구분선색)"></button><button type="button" class="sw-b" data-col="m" title="흐린색(출처색)"></button>
+    <label class="sw-b sw-c" title="직접 고르기"><input type="color" id="popColor" value="#e0102a"></label>
+  </div>
+  <div class="sp-row">
+    <span class="sp-l">문단</span>
+    <button type="button" data-quote title="인용 문단">▏인용</button><button type="button" data-ind="1" title="안쪽으로 들여쓰기">→ 들여쓰기</button><button type="button" data-ind="-1" title="들여쓰기 한 칸 빼기">← 내어쓰기</button>
+  </div>
+</div>
 
 <script>
 (() => {
@@ -507,7 +536,7 @@ const DEF = {
     {t:'div', ds:'short'},
     {t:'text', text:'> 블록마다 글자 크기와 정렬을 따로 정할 수 있어요.', align:'', size:0, lh:0}
   ],
-  srcOn:true, chatStyle:'bubble', logStart:'23:41:07', logTime:true, logBadge:'fill', logQuote:false, scriptGut:5.5, scriptColor:false, scriptQuote:false, trParen:true, chatScale:0.9, chatAv:1.6, chatGap:0.9,
+  srcOn:true, chatStyle:'bubble', sysScale:1, sysTone:'auto', sysColor:'#e0102a', logStart:'23:41:07', logTime:true, logBadge:'fill', logQuote:false, scriptGut:5.5, scriptColor:false, scriptQuote:false, trParen:true, chatScale:0.9, chatAv:1.6, chatGap:0.9,
   sp:[{name:'화자 1',side:'left',bub:'#e6eefb',txt:'#0d2a4a',bar:'#2f6fd6'},{name:'화자 2',side:'right',bub:'#123a6b',txt:'#ffffff',bar:'#3cc8b0'},
       {name:'화자 3',side:'left',bub:'#e3f7f2',txt:'#0f3b46',bar:'#1f9e8a'},{name:'화자 4',side:'right',bub:'#dcecfa',txt:'#0d2a4a',bar:'#8fc3ea'}],
   av:[null,null,null,null],
@@ -671,6 +700,7 @@ function syncUI(){
     $$('#missTone button').forEach(b => b.classList.toggle('on', (b.dataset.v === 'dark') === dark)); }
   if (renderFT.last !== S.deco) renderFT();
   $$('.deco-report').forEach(e => e.hidden = S.deco !== 'report');
+  $$('.sys-custom').forEach(e => e.hidden = S.sysTone !== 'custom');
   $$('.sign-custom').forEach(e => e.hidden = S.deco !== 'report' || S.signTone !== 'custom');
   $$('.lay').forEach(b => b.classList.toggle('on', b.dataset.lay === S.layout));
   $$('.ph-cover').forEach(e => e.hidden = S.photoFit !== 'cover' && S.photoZoom <= 1);
@@ -734,10 +764,14 @@ function mw(ctx, ch, font){
   return w;
 }
 const OPEN_Q = '“「『‘', CLOSE_Q = '”」』’';
+const COL_RE = /^\{(#[0-9a-fA-F]{3,8}|[abgm]|\/)\}/;
+const colOf = c => c === 'a' ? S.accent : c === 'b' ? S.dlg : c === 'g' ? S.divColor : c === 'm' ? S.srcColor : c;
+const MARK_RE = /\*\*|==|\[\[|\]\]|\{(?:#[0-9a-fA-F]{3,8}|[abgm]|\/)\}|\*/g;
 function parseInline(s, dlg){
-  let b=false, i=false, h=false, a=false, d=false;
+  let b=false, i=false, h=false, a=false, d=false, col=null;
   const out = [];
   for (let k = 0; k < s.length; ) {
+    if (s[k] === '{') { const m = COL_RE.exec(s.slice(k, k + 12)); if (m) { col = m[1] === '/' ? null : m[1]; k += m[0].length; continue; } }
     if (s.startsWith('**', k)) { b = !b; k += 2; continue; }
     if (s.startsWith('==', k)) { h = !h; k += 2; continue; }
     if (s.startsWith('[[', k)) { a = true; k += 2; continue; }
@@ -752,7 +786,7 @@ function parseInline(s, dlg){
       else if (CLOSE_Q.includes(c) && c !== '’') { dn = d || true; d = false; }
       else if (c === '"') { dn = true; d = !d; }
     }
-    out.push({c, b, i, h, a, d: dn, sp: c === ' ' || c === '\t'});
+    out.push({c, b, i, h, a, d: dn, col, sp: c === ' ' || c === '\t'});
   }
   return out;
 }
@@ -796,6 +830,8 @@ function needsGutter(){
 const _mctx = document.createElement('canvas').getContext('2d');
 const TIME_RE = /^(\d{1,2}):(\d{2})(?::(\d{2}))?\s+/;
 const lumOf = hex => { const h = String(hex).replace('#', ''); if (h.length < 6) return 0.5; const [r, g, b] = [0, 2, 4].map(i => parseInt(h.substr(i, 2), 16)/255); return 0.2126*r + 0.7152*g + 0.0722*b; };
+const sysCol = () => S.sysTone === 'accent' ? S.accent : S.sysTone === 'fg' ? S.fg : S.sysTone === 'custom' ? S.sysColor : S.srcColor;
+const sysBg = () => S.sysTone && S.sysTone !== 'auto' ? rgba(sysCol(), 0.13) : rgba(S.divColor, 0.22);
 const tagOf = sp => (sp && sp.tag || '').trim();
 const badgeText = n => tagOf(S.sp[n]) || nameOf(S.sp[n]) || `P${n + 1}`;
 // with a separate badge label, the name follows the badge as plain text
@@ -818,12 +854,15 @@ function flowPlan(body, fs){
   let clock = m0 ? (+m0[1])*3600 + (+m0[2])*60 + (+(m0[3] || 0)) : 0, tick = 0;
   for (const p of body.split('\n')) {
     if (!p.trim()) { if (last) blank = true; continue; }
-    let m, t;
-    if ((m = /^\[([1-4])\]\s?/.exec(p))) t = {k: 'chat', n: +m[1] - 1};
-    else if ((m = /^\[-\]\s?/.exec(p))) t = {k: 'tr', n: isChat(last) ? lastSp : -1};
-    else if ((m = /^\[[sS]\]\s?/.exec(p))) t = {k: 'sys'};
-    else if ((m = /^>\s?/.exec(p))) t = {k: 'quote'};
-    t ? (t.text = p.slice(m[0].length)) : (t = {k: 'para', text: p});
+    let m, t, ind = 0, q = p;
+    const mi = /^\[(>{1,3})\]\s?/.exec(q); if (mi) { ind = mi[1].length; q = q.slice(mi[0].length); }
+    if ((m = /^\[([1-4])\]\s?/.exec(q))) t = {k: 'chat', n: +m[1] - 1};
+    else if ((m = /^\[-\]\s?/.exec(q))) t = {k: 'tr', n: isChat(last) ? lastSp : -1};
+    else if ((m = /^\[[sS]\]\s?/.exec(q))) t = {k: 'sys'};
+    else if ((m = /^\[( |x|X)\]\s?/.exec(q))) t = {k: 'todo', done: m[1] !== ' '};
+    else if ((m = /^>\s?/.exec(q))) t = {k: 'quote'};
+    t ? (t.text = q.slice(m[0].length)) : (t = {k: 'para', text: q});
+    if (t.k === 'para' || t.k === 'quote' || t.k === 'todo') t.ind = ind;
     t.cont = t.k === 'chat' && isChat(last) && lastSp === t.n && !blank;
     if (LOG && t.k === 'chat') {
       const mm = TIME_RE.exec(t.text);
@@ -837,7 +876,7 @@ function flowPlan(body, fs){
     }
     let g = 0;
     if (last) {
-      const bl = fs*S.lineH*0.75, PL = S.chatStyle === 'plain', textish = k => k === 'para' || k === 'quote' || (PL && k === 'chat');
+      const bl = fs*S.lineH*0.75, PL = S.chatStyle === 'plain', textish = k => k === 'para' || k === 'quote' || k === 'todo' || (PL && k === 'chat');
       if (SC) {
         if (t.k === 'tr') g = blank ? bl : 0;
         else if (t.cont) g = fs*Math.max(S.paraGap, 0.45);
@@ -847,6 +886,7 @@ function flowPlan(body, fs){
       else if (t.k === 'tr') g = PL ? 0 : fs*0.25;
       else if (t.k === 'chat' && isChat(last) && !PL) g = fs*S.chatGap*(LOG ? (t.cont ? 0.3 : t.div ? 1.3 : 0.8) : (t.cont ? 0.35 : 1));
       else if (t.k === 'sys') g = fs*Math.max(S.chatGap, 0.6);
+      else if (t.k === 'todo' && last === 'todo') g = fs*Math.min(S.paraGap, 0.3);
       else if (textish(t.k) && textish(last)) g = fs*S.paraGap;
       else g = fs*Math.max(S.paraGap, 0.6);
     }
@@ -866,7 +906,7 @@ function layout(ctx, box){
     const chars = o.plain ? [...str].map(c => ({c, sp: c === ' '})) : parseInline(str, !!o.dlg);
     if (o.bold) chars.forEach(c => c.b = true);
     const ls = S.letter * o.size / fs;
-    chars.forEach(c => { c.font = fontOf(c, o.size); c.w = mw(ctx, c.c, c.font) + ls; });
+    chars.forEach(c => { c.font = o.font ? `${o.fw || 500} ${o.size}px ${o.font}` : fontOf(c, o.size); c.w = mw(ctx, c.c, c.font) + ls; });
     const lines = wrap(chars, maxW, o.indent || 0, ls);
     return {lines, ls, w: Math.max(0, ...lines.map(l => l.w - ls))};
   }
@@ -963,14 +1003,13 @@ function layout(ctx, box){
   }
   function addSys(text){
     if (LOGD) {
-      const ss = LOGD.ts, lh = ss*1.7, off = LOGD.timeW;
-      items.push({k:'lbl', x: pad + off, y, lh, text: '▸ ' + text, size: ss, color: S.srcColor});
-      y += lh; return;
+      const ss = LOGD.ts*(S.sysScale || 1), off = LOGD.timeW, o = {size: ss, lh: ss*1.7, align: 'left', color: sysCol(), plain: true, font: MONO};
+      y = pushLines(mkLines('▸ ' + text, o, cw - off), o, pad + off, y); return;
     }
-    const ss = fs*0.62, o = {size: ss, lh: ss*1.5, align: 'center', color: S.srcColor, plain: true};
+    const ss = fs*0.62*(S.sysScale || 1), o = {size: ss, lh: ss*1.5, align: 'center', color: sysCol(), plain: true};
     const L = mkLines(text, o, cw*0.8), ph = ss*0.55, pw = ss*1.1;
     const bw = L.w + 2*pw, bh = L.lines.length*o.lh + 2*ph;
-    items.push({k:'bub', x: pad + (cw - bw)/2, y, w: bw, h: bh, color: rgba(S.divColor, 0.22), side: 'c', tail: false});
+    items.push({k:'bub', x: pad + (cw - bw)/2, y, w: bw, h: bh, color: sysBg(), side: 'c', tail: false});
     L.lines.forEach(l => l.max = cw*0.8);
     pushLines(L, o, pad + cw*0.1, y + ph);
     y += bh;
@@ -983,11 +1022,18 @@ function layout(ctx, box){
       if (t.k === 'chat') addChat(t.n, t.text, t.cont && (S.chatStyle === 'bubble' || S.chatStyle === 'log' || SC), t.time, t.div, t.gap);
       else if (t.k === 'tr') addTr(t.text, t.n);
       else if (t.k === 'sys') addSys(t.text);
+      else if (t.k === 'todo') {
+        const IND = (t.ind || 0)*fs*1.6, lh = fs*S.lineH, bs = fs*0.66, from = items.length;
+        const start = addText(t.text, {size: fs, lh, align: S.align === 'justify' ? 'justify' : 'left', color: t.done ? S.srcColor : S.fg, dlg: S.dlgOn, inset: IND + fs*1.45, body: true});
+        items.push({k:'cb', x: pad + IND + fs*0.08, y: start + (lh - bs)/2, s: bs, done: t.done});
+        if (t.done) for (const it of items.slice(from)) if (it.k === 't' && it.line.items.length)
+          items.push({k:'rule', x: it.left + it.line.indent, y: it.y + it.lh/2 + fs*0.04, w: it.line.w - it.ls, h: Math.max(1, fs*0.06), color: S.srcColor, alpha: 0.85});
+      }
       else if (t.k === 'quote') {
-        const centered = tAlign === 'center' || tAlign === 'right', inset = centered ? 0 : fs*1.15, from = items.length;
+        const centered = tAlign === 'center' || tAlign === 'right', inset = centered ? 0 : fs*1.15 + (t.ind || 0)*fs*1.6, from = items.length;
         const start = addText(t.text, {size: fs, lh: fs*S.lineH, align: S.align === 'justify' ? 'justify' : tAlign, color: S.fg, alpha: 0.8, dlg: S.dlgOn, inset, body: true});
         const lh = fs*S.lineH, trim = (lh - fs)/2;
-        let bx = pad + fs*0.3;
+        let bx = pad + fs*0.3 + (t.ind || 0)*fs*1.6;
         if (centered) {   // bar sits just left of the leftmost line
           let minX = Infinity;
           for (const it of items.slice(from)) if (it.k === 't') {
@@ -999,7 +1045,7 @@ function layout(ctx, box){
         items.push({k:'bar', x: bx, y: start + trim*0.6, w: Math.max(2, fs*0.08), h: y - start - trim*1.2, color: S.accent, alpha: 0.9});
       } else {
         const ind = S.indent && (S.align === 'left' || S.align === 'justify') ? fs : 0;
-        addText(t.text, {size: fs, lh: fs*S.lineH, align: S.align, color: S.fg, dlg: S.dlgOn, indent: ind, body: true});
+        addText(t.text, {size: fs, lh: fs*S.lineH, align: S.align, color: S.fg, dlg: S.dlgOn, indent: ind, inset: (t.ind || 0)*fs*1.6, body: true});
       }
     }
   }
@@ -2097,7 +2143,7 @@ function drawLine(ctx, it, y0){
   items.forEach((c, k) => {
     if (c.sp) return;
     ctx.font = c.font;
-    ctx.fillStyle = c.a ? (accSt === 'box' ? '#ffffff' : accSt === 'under' ? it.color : S.accent) : c.d ? S.dlg : it.color;
+    ctx.fillStyle = c.a ? (accSt === 'box' ? '#ffffff' : accSt === 'under' ? it.color : S.accent) : c.col ? colOf(c.col) : c.d ? S.dlg : it.color;
     ctx.fillText(c.c, xs[k], cy);
   });
   ctx.restore();
@@ -2154,6 +2200,17 @@ function render(cv, scale){
     else if (it.k === 'lbl') {
       ctx.save(); ctx.font = `${it.w || 500} ${it.size}px ${it.font || MONO}`; try { ctx.letterSpacing = (it.ls ?? it.size*0.04) + 'px'; } catch(e){}
       ctx.fillStyle = it.color; ctx.textBaseline = 'middle'; ctx.fillText(it.text, it.x, y0 + it.y + it.lh/2); ctx.restore();
+    } else if (it.k === 'cb') {
+      const yy = y0 + it.y, s = it.s, lw = Math.max(1.5, s*0.1);
+      ctx.save();
+      if (it.done) {
+        ctx.fillStyle = S.accent; rrect(ctx, it.x, yy, s, s, s*0.16); ctx.fill();
+        ctx.strokeStyle = '#ffffff'; ctx.lineWidth = lw*1.15; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+        ctx.beginPath(); ctx.moveTo(it.x + s*0.24, yy + s*0.52); ctx.lineTo(it.x + s*0.43, yy + s*0.7); ctx.lineTo(it.x + s*0.77, yy + s*0.3); ctx.stroke();
+      } else {
+        ctx.strokeStyle = S.fg; ctx.globalAlpha = 0.6; ctx.lineWidth = lw; rrect(ctx, it.x + lw/2, yy + lw/2, s - lw, s - lw, s*0.14); ctx.stroke();
+      }
+      ctx.restore();
     } else if (it.k === 'badge') {
       const yy = y0 + it.y, r = it.h*0.22;
       ctx.save();
@@ -2207,8 +2264,9 @@ function schedule(){
     PREVIEW = true; const r = render($('#cv'), 1); PREVIEW = false;
     $('#info').textContent = `${r.W} × ${r.H}px · 저장 ${r.W*2} × ${r.H*2}px`;
     const txt = S.mode === 'blocks' ? S.blocks.map(b => b.text || '').join('') : S.body;
-    $('#count').textContent = `${[...txt.replace(/\*\*|==|\[\[|\]\]|\*/g,'')].length.toLocaleString()}자`;
+    $('#count').textContent = `${[...txt.replace(MARK_RE,'').replace(/^\[(?:>{1,3}|[ xX])\]\s?/gm,'')].length.toLocaleString()}자`;
     $('#over').hidden = !r.over;
+    refreshSpk();
     persist();
   });
 }
@@ -2216,12 +2274,30 @@ function schedule(){
 /* ---------- toolbar ---------- */
 const ta = $('#body');
 const lineSpan = ta => { const v = ta.value, s0 = v.lastIndexOf('\n', ta.selectionStart - 1) + 1; let e = v.indexOf('\n', ta.selectionEnd); if (e < 0) e = v.length; return [s0, e]; };
-document.addEventListener('pointerdown', e => { if (e.target.closest('[data-wrap],[data-quote],[data-pre]')) e.preventDefault(); });
+const ACT = '[data-wrap],[data-quote],[data-pre],[data-col],[data-strip],[data-ind]';
+document.addEventListener('pointerdown', e => { if (e.target.closest(ACT)) e.preventDefault(); });
 document.addEventListener('click', ev => {
-  const b = ev.target.closest('[data-wrap],[data-quote],[data-pre]'); if (!b) return;
-  const t = b.closest('.rich')?.querySelector('textarea'); if (!t) return;
+  const b = ev.target.closest(ACT); if (!b) return;
+  const t = b.closest('.rich')?.querySelector('textarea') || (b.closest('#selpop') ? popT : null); if (!t) return;
   const v = t.value; t.focus();
-  if (b.dataset.wrap) {
+  if (b.dataset.col) applyColor(t, b.dataset.col);
+  else if (b.hasAttribute('data-strip')) {   // also swallow markers hugging the selection
+    let s0 = t.selectionStart, e = t.selectionEnd, m;
+    const END = /(\*\*|==|\[\[|\{(?:#[0-9a-fA-F]{3,8}|[abgm])\}|\*)$/, START = /^(\*\*|==|\]\]|\{\/\}|\*)/;
+    while ((m = END.exec(v.slice(Math.max(0, s0 - 10), s0)))) s0 -= m[1].length;
+    while ((m = START.exec(v.slice(e, e + 3)))) e += m[1].length;
+    t.setRangeText(v.slice(s0, e).replace(MARK_RE, ''), s0, e, 'select');
+  }
+  else if (b.dataset.ind) {
+    const d = +b.dataset.ind, [s0, e] = lineSpan(t);
+    t.setRangeText(v.slice(s0, e).split('\n').map(l => { if (!l.trim()) return l; const m = /^\[(>{1,3})\]\s?/.exec(l), cur = m ? m[1].length : 0, bare = m ? l.slice(m[0].length) : l, n = Math.max(0, Math.min(3, cur + d)); return n ? `[${'>'.repeat(n)}] ${bare}` : bare; }).join('\n'), s0, e, 'select');
+  }
+  else if (b.dataset.pre === ' ') {   // checklist: none → [ ] → [x] → none
+    const [s0, e] = lineSpan(t);
+    t.setRangeText(v.slice(s0, e).split('\n').map(l => { if (!l.trim()) return l; const m = /^(\[>{1,3}\]\s?)?(\[([ xX])\]\s?)?/.exec(l), pre = m[1] || '', bare = l.slice(m[0].length);
+      return pre + (!m[2] ? '[ ] ' : m[3] === ' ' ? '[x] ' : '') + bare; }).join('\n'), s0, e, 'select');
+  }
+  else if (b.dataset.wrap) {
     const a = b.dataset.wrap, z = b.dataset.wrap2 || a, s0 = t.selectionStart, e = t.selectionEnd;
     if (v.slice(s0 - a.length, s0) === a && v.slice(e, e + z.length) === z) t.setRangeText(v.slice(s0, e), s0 - a.length, e + z.length, 'select');
     else if (v.slice(s0, s0 + a.length) === a && v.slice(e - z.length, e) === z && e - s0 >= a.length + z.length) t.setRangeText(v.slice(s0 + a.length, e - z.length), s0, e, 'select');
@@ -2231,10 +2307,62 @@ document.addEventListener('click', ev => {
     t.setRangeText(blk.map(l => !l.trim() ? l : all ? l.replace(/^>\s?/, '') : '> ' + l).join('\n'), s0, e, 'select');
   } else {
     const tag = `[${b.dataset.pre}] `, [s0, e] = lineSpan(t);
-    t.setRangeText(v.slice(s0, e).split('\n').map(l => { const bare = l.replace(/^\[[1-4sS-]\]\s?/, ''); return l.startsWith(tag.trim()) ? bare : (l.trim() ? tag + bare : l); }).join('\n'), s0, e, 'select');
+    t.setRangeText(v.slice(s0, e).split('\n').map(l => { const bare = l.replace(/^\[(?:>{1,3}|[1-4sS -]|x|X)\]\s?/, ''); return l.startsWith(tag.trim()) ? bare : (l.trim() ? tag + bare : l); }).join('\n'), s0, e, 'select');
   }
   t.dispatchEvent(new Event('input', {bubbles: true}));
+  if (b.closest('#selpop')) setTimeout(showPop, 30);
 });
+// colour a selection: same colour again removes it, another colour swaps it
+function applyColor(t, c){
+  const v = t.value, s0 = t.selectionStart, e = t.selectionEnd, open = `{${c}}`;
+  const pm = /\{(#[0-9a-fA-F]{3,8}|[abgm])\}$/.exec(v.slice(Math.max(0, s0 - 10), s0));
+  if (pm && v.slice(e, e + 3) === '{/}') {
+    const os = s0 - pm[0].length, inner = v.slice(s0, e);
+    if (pm[1].toLowerCase() === c.toLowerCase()) { t.setRangeText(inner, os, e + 3, 'select'); }
+    else { t.setRangeText(open + inner + '{/}', os, e + 3, 'end'); t.setSelectionRange(os + open.length, os + open.length + inner.length); }
+  } else if (e > s0) { t.setRangeText(open + v.slice(s0, e) + '{/}', s0, e, 'end'); t.setSelectionRange(s0 + open.length, e + open.length); }
+}
+/* drag-selection popup */
+const pop = $('#selpop'); let popT = null;
+const mir = document.createElement('div'); document.body.append(mir);
+function caretXY(t, pos){
+  const cs = getComputedStyle(t);
+  mir.style.cssText = 'position:absolute;visibility:hidden;top:0;left:-9999px;white-space:pre-wrap;overflow-wrap:break-word;overflow:hidden';
+  ['boxSizing','width','fontFamily','fontSize','fontWeight','fontStyle','lineHeight','letterSpacing','paddingTop','paddingRight','paddingBottom','paddingLeft','borderTopWidth','borderRightWidth','borderBottomWidth','borderLeftWidth','borderStyle','textIndent','wordBreak'].forEach(k => mir.style[k] = cs[k]);
+  mir.textContent = t.value.slice(0, pos);
+  const sp = document.createElement('span'); sp.textContent = t.value.slice(pos, pos + 1) || '.'; mir.append(sp);
+  return {x: sp.offsetLeft, y: sp.offsetTop, lh: parseFloat(cs.lineHeight) || 26};
+}
+const hidePop = () => { pop.hidden = true; };
+function showPop(){
+  const t = document.activeElement;
+  if (pop.contains(t)) return;
+  if (!t || t.tagName !== 'TEXTAREA' || !t.closest('.rich') || t.selectionStart === t.selectionEnd) { hidePop(); return; }
+  popT = t;
+  pop.querySelectorAll('[data-col]').forEach(b => b.style.background = colOf(b.dataset.col));
+  pop.hidden = false;
+  const r = t.getBoundingClientRect(), a = caretXY(t, t.selectionStart), z = caretXY(t, t.selectionEnd);
+  const pw = pop.offsetWidth, ph = pop.offsetHeight, coarse = matchMedia('(pointer:coarse)').matches;
+  const clampY = y => Math.max(r.top, Math.min(r.bottom - z.lh, y));
+  let top = clampY(r.top + z.y - t.scrollTop) + z.lh + 8;   // below the selection, clear of the toolbar
+  if (top + ph > innerHeight - 8 && !coarse) top = clampY(r.top + a.y - t.scrollTop) - ph - 8;
+  top = Math.max(8, Math.min(innerHeight - ph - 8, top));
+  const left = Math.max(8, Math.min(innerWidth - pw - 8, r.left + a.x - 12));
+  pop.style.top = top + 'px'; pop.style.left = left + 'px';
+}
+let popTimer = 0;
+const queuePop = () => { clearTimeout(popTimer); popTimer = setTimeout(showPop, 90); };
+document.addEventListener('selectionchange', queuePop);
+document.addEventListener('mouseup', queuePop);
+document.addEventListener('keyup', e => { if (e.key === 'Escape') hidePop(); else queuePop(); });
+document.addEventListener('pointerdown', e => { if (!pop.contains(e.target) && !e.target.closest('.rich textarea')) hidePop(); });
+addEventListener('scroll', () => { if (!pop.hidden) showPop(); }, true);
+$('#popColor').addEventListener('change', e => { if (!popT) return; applyColor(popT, e.target.value); popT.dispatchEvent(new Event('input', {bubbles: true})); popT.focus(); setTimeout(showPop, 30); });
+// speaker buttons show the speaker's name and colour
+function refreshSpk(){
+  $$('button.spk').forEach(b => { const n = +b.dataset.pre, sp = S.sp[n - 1]; if (!sp) return;
+    b.querySelector('i').style.background = sp.bar; const nm = nameOf(sp) || `화자 ${n}`; const el = b.querySelector('span'); if (el.textContent !== nm) el.textContent = nm; });
+}
 $('#expand').addEventListener('click', () => { ta.classList.toggle('big'); $('#expand').textContent = ta.classList.contains('big') ? '⤡ 좁게' : '⤢ 넓게'; });
 
 /* ---------- blocks ---------- */
@@ -2276,11 +2404,7 @@ function newBlock(t){
           code: t === 'html' ? '<div style="border:1px solid #3cc8b0;padding:14px 18px;border-radius:6px">\n  <b>HTML 블록</b><br>스타일은 코드 안에 직접 적어요.\n</div>' : ''};
 }
 const bseg = (f, cur, opts) => `<div class="seg" data-bseg="${f}">${opts.map(([v, l]) => `<button type="button" data-v="${v}" class="${String(cur ?? '') === v ? 'on' : ''}">${l}</button>`).join('')}</div>`;
-const RICH = `<div class="tools">
-  <button type="button" data-wrap="**"><b>B</b></button><button type="button" data-wrap="*"><i>I</i></button>
-  <button type="button" data-wrap="=="><span class="mk">형광펜</span></button><button type="button" data-wrap="[[" data-wrap2="]]"><span class="ac">강조</span></button>
-  <button type="button" data-quote>▏인용</button><button type="button" data-pre="1">[1]</button><button type="button" data-pre="2">[2]</button>
-  <button type="button" data-pre="3">[3]</button><button type="button" data-pre="4">[4]</button><button type="button" data-pre="s">[s]</button><button type="button" data-pre="-">[-]</button></div>`;
+const RICH = `<div class="tools"><button type="button" class="spk" data-pre="1" title="이 줄을 화자 1 대사로"><i></i><span>화자 1</span></button><button type="button" class="spk" data-pre="2" title="이 줄을 화자 2 대사로"><i></i><span>화자 2</span></button><button type="button" class="spk" data-pre="3" title="이 줄을 화자 3 대사로"><i></i><span>화자 3</span></button><button type="button" class="spk" data-pre="4" title="이 줄을 화자 4 대사로"><i></i><span>화자 4</span></button><button type="button" data-pre="s" title="가운데 알림 줄">◎ 알림</button><button type="button" data-pre="-" title="바로 위 대사의 번역 줄">↳ 번역</button><button type="button" data-pre=" " title="체크리스트 줄 (한 번 더 누르면 체크)">☐ 체크</button></div>`;
 function blockBody(b){
   const A3 = [['', '기본'], ['left', '왼쪽'], ['center', '가운데'], ['right', '오른쪽']];
   if (b.t === 'title' || b.t === 'sub') return `
@@ -2491,11 +2615,11 @@ function buildHTML(fragment){
   const GUT = needsGutter() ? Math.min((W - 2*P)*0.4, F*S.scriptGut) : 0;
   const tAlign = S.align === 'justify' ? 'left' : S.align;
   const inl = (str, dlg) => {
-    let out = '', key = null, buf = '';
-    const flush = () => { if (!buf) return; out += key ? `<span class="${key}">${buf}</span>` : buf; buf = ''; };
+    let out = '', key = null, cls = '', col = null, buf = '';
+    const flush = () => { if (!buf) return; out += cls || col ? `<span${cls ? ` class="${cls}"` : ''}${col ? ` style="color:${colOf(col)}"` : ''}>${buf}</span>` : buf; buf = ''; };
     for (const c of parseInline(str, dlg)) {
-      const k = [c.b && 'b', c.i && 'i', c.h && 'h', c.d && 'd', c.a && 'a'].filter(Boolean).join(' ');
-      if (k !== key) { flush(); key = k; }
+      const k = [c.b && 'b', c.i && 'i', c.h && 'h', c.d && 'd', c.a && 'a'].filter(Boolean).join(' '), cc = c.a ? null : c.col;
+      if (k + '|' + cc !== key) { flush(); key = k + '|' + cc; cls = k; col = cc; }
       buf += E(c.c);
     }
     flush(); return out;
@@ -2541,15 +2665,18 @@ function buildHTML(fragment){
         }
       } else if (t.k === 'sys' && S.chatStyle === 'log') {
         const D = logDims(fs);
-        h += `<p class="lt li" style="${mt}font-size:${e(D.ts)};line-height:1.7;white-space:normal;padding-left:${e(D.timeW, D.ts)}">▸ ${E(t.text)}</p>`;
+        h += `<p class="lt li" style="${mt}font-size:${e(D.ts*(S.sysScale || 1))};color:${sysCol()};line-height:1.7;white-space:normal;padding-left:${e(D.timeW, D.ts*(S.sysScale || 1))}">▸ ${E(t.text)}</p>`;
       } else if (t.k === 'sys') {
-        const ss = fs*0.62;
-        h += `<div class="sys" style="${mt}"><span style="font-size:${e(ss)};padding:.55em 1.1em">${E(t.text)}</span></div>`;
+        const ss = fs*0.62*(S.sysScale || 1);
+        h += `<div class="sys" style="${mt}"><span style="color:${sysCol()};background:${sysBg()};font-size:${e(ss)};padding:.55em 1.1em">${E(t.text)}</span></div>`;
+      } else if (t.k === 'todo') {
+        const I = (t.ind || 0)*1.6;
+        h += `<p class="td${t.done ? ' dn' : ''}${align === 'justify' ? ' j' : ''}" style="${mt}padding-left:${I + 1.45}em"><span class="cb${t.done ? ' on' : ''}" style="left:${I + 0.08}em"></span>${inl(t.text, S.dlgOn)}</p>`;
       } else if (t.k === 'quote') {
-        h += `<p class="q${align === 'justify' ? ' j' : ''}" style="${mt}text-align:${align};border-left-width:${px(Math.max(2, fs*0.08))};padding-left:${px(fs*1.15 - Math.max(2, fs*0.08) - fs*0.3)};margin-left:${px(fs*0.3)}">${inl(t.text, S.dlgOn)}</p>`;
+        h += `<p class="q${align === 'justify' ? ' j' : ''}" style="${mt}text-align:${align};border-left-width:${px(Math.max(2, fs*0.08))};padding-left:${px(fs*1.15 - Math.max(2, fs*0.08) - fs*0.3)};margin-left:${t.ind ? `calc(${px(fs*0.3)} + ${t.ind*1.6}em)` : px(fs*0.3)}">${inl(t.text, S.dlgOn)}</p>`;
       } else {
         const ind = S.indent && (align === 'left' || align === 'justify') ? 'text-indent:1em;' : '';
-        h += `<p${align === 'justify' ? ' class="j"' : ''} style="${mt}text-align:${align};${ind}">${inl(t.text, S.dlgOn)}</p>`;
+        h += `<p${align === 'justify' ? ' class="j"' : ''} style="${mt}text-align:${align};${ind}${t.ind ? `padding-left:${t.ind*1.6}em;` : ''}">${inl(t.text, S.dlgOn)}</p>`;
       }
     }
     return h;
@@ -2645,6 +2772,9 @@ function buildHTML(fragment){
 .qs .mn{font-weight:700;color:${S.srcColor};line-height:1.5;margin-bottom:.2em}
 .qs .bb{line-height:1.5}
 .qs .av{display:grid;place-items:center;border-radius:50%;color:#fff;font-weight:700;flex:none}
+.qs .td{position:relative;text-align:left}.qs .cb{position:absolute;top:calc(${S.lineH}em/2 - .33em);width:.66em;height:.66em;box-sizing:border-box;border:max(1.5px,.07em) solid ${rgba(S.fg, 0.6)};border-radius:.14em}
+.qs .cb.on{background:${S.accent};border-color:${S.accent}}.qs .cb.on::after{content:"";position:absolute;left:.19em;top:.05em;width:.16em;height:.34em;border:solid #fff;border-width:0 .075em .075em 0;transform:rotate(45deg)}
+.qs .dn{color:${S.srcColor};text-decoration:line-through;text-decoration-color:${rgba(S.srcColor, 0.9)}}
 .qs .sys{text-align:center}.qs .sys span{display:inline-block;border-radius:999px;background:${rgba(S.divColor, 0.22)};color:${S.srcColor};line-height:1.5}
 .qs .dots{text-align:center;color:${S.divColor};letter-spacing:.3em}
 .qs .wm{position:absolute;color:${S.fg};line-height:1}
