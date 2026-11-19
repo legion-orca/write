@@ -188,6 +188,7 @@ input[type=range]:focus-visible::-webkit-slider-thumb{border-color:var(--mint)}
 .tools .spk{display:inline-flex;align-items:center;gap:6px}
 .tools .spk i{width:8px;height:8px;border-radius:50%;background:var(--blue);flex:none}
 .tools .spk[hidden]{display:none}
+textarea.code{font:12.5px/1.55 var(--mono);background-image:none;white-space:pre;overflow:auto;tab-size:2}
 .fld.sptabs{display:flex;flex-direction:row;flex-wrap:nowrap;gap:6px;align-items:stretch}.sptabs .seg{flex:1}
 .spadd{flex:none;width:34px;border:1px solid var(--line2);background:var(--panel);border-radius:var(--r);color:var(--blue);font-size:16px;cursor:pointer}.spadd:disabled{opacity:.35;cursor:default}
 .tools .spk span{max-width:7em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -328,6 +329,16 @@ input[type=range]:focus-visible::-webkit-slider-thumb{border-color:var(--mint)}
       <p class="sub" style="margin-top:0">프레임을 누르면 그 페어 전용 색(배경·글자·말풍선)까지 한 번에 바뀌어요. 글만 있는 레이아웃은 색을 그대로 둬요.</p>
       <div class="lays" id="lays"></div>
       <div class="fld miss-only" style="margin-top:14px"><span>Miss 배경</span><div class="seg" id="missTone"><button type="button" data-v="light">흰색</button><button type="button" data-v="dark">검정</button></div></div>
+    </details>
+    <details class="sd deco-custom" open><summary>자유 프레임 (HTML)</summary>
+      <p class="sub" style="margin-top:0">캔버스 크기 그대로 그려지는 HTML이에요. <code>&lt;style&gt;</code>도 같이 넣을 수 있고, 이 칸 안에서만 적용돼요. 글이 들어갈 자리에 <code>data-text</code>를 붙인 빈 칸을 두면 글이 그 안에 맞춰 들어가요. 색은 <code>var(--bg)</code> <code>var(--fg)</code> <code>var(--accent)</code> <code>var(--blue)</code> <code>var(--green)</code> <code>var(--muted)</code> <code>var(--hl)</code>로 테마를 따라가고, 글자 안의 <code>{today}</code> <code>{md}</code> <code>{size}</code> 같은 문구도 바뀌어요. 프리셋에 저장하면 이 HTML도 같이 저장돼요.</p>
+      <textarea data-k="frameHtml" rows="8" spellcheck="false" class="code" placeholder="&lt;div data-text&gt;&lt;/div&gt; …"></textarea>
+      <div class="tools" style="margin:6px 0 10px"><button type="button" id="frameSample">예시 넣기</button><span class="sub" id="frameStat" style="margin:0 0 0 6px"></span></div>
+      <div class="fld"><span>프레임 위치</span><div class="seg" data-k="frameLayer" data-opts="under=글 뒤,over=글 위"></div></div>
+      <div class="frame-pad">
+        <p class="sub" style="margin:0 0 6px"><code>data-text</code> 칸이 없을 때 글 영역 여백이에요 (기본 여백에 더해져요).</p>
+        <div class="rgrid"><div class="rng" data-range="frameTop|위|0|500|2|px"></div><div class="rng" data-range="frameBot|아래|0|500|2|px"></div><div class="rng" data-range="frameSide|좌우|0|300|2|px"></div></div>
+      </div>
     </details>
     <details class="sd deco-on"><summary>프레임 문구</summary>
       <div id="ftBox" class="row2"></div>
@@ -540,7 +551,7 @@ const DEF = {
     {t:'div', ds:'short'},
     {t:'text', text:'> 블록마다 글자 크기와 정렬을 따로 정할 수 있어요.', align:'', size:0, lh:0}
   ],
-  srcOn:true, chatStyle:'bubble', sysScale:1, sysTone:'auto', sysColor:'#e0102a', logStart:'23:41:07', logTime:true, logBadge:'fill', logQuote:false, scriptGut:5.5, scriptColor:false, scriptQuote:false, trParen:true, chatScale:0.9, chatAv:1.6, chatGap:0.9,
+  srcOn:true, frameHtml:'', frameLayer:'under', frameTop:0, frameBot:0, frameSide:0, chatStyle:'bubble', sysScale:1, sysTone:'auto', sysColor:'#e0102a', logStart:'23:41:07', logTime:true, logBadge:'fill', logQuote:false, scriptGut:5.5, scriptColor:false, scriptQuote:false, trParen:true, chatScale:0.9, chatAv:1.6, chatGap:0.9,
   sp:[{name:'화자 1',side:'left',bub:'#e6eefb',txt:'#0d2a4a',bar:'#2f6fd6'},{name:'화자 2',side:'right',bub:'#123a6b',txt:'#ffffff',bar:'#3cc8b0'},
       {name:'화자 3',side:'left',bub:'#e3f7f2',txt:'#0f3b46',bar:'#1f9e8a'},{name:'화자 4',side:'right',bub:'#dcecfa',txt:'#0d2a4a',bar:'#8fc3ea'},
       {name:'화자 5',side:'left',bub:'#eef3f8',txt:'#0d2a4a',bar:'#0d2a4a'},{name:'화자 6',side:'right',bub:'#e8f8f5',txt:'#0d2a4a',bar:'#6fd8c6'}],
@@ -555,7 +566,7 @@ const CONTENT = ['title','subtitle','body','name','maker','wm','av','sign','bloc
 let S = {...DEF};
 try { const saved = JSON.parse(localStorage.getItem('qs-state-v2')||'null'); if (saved) { S = {...DEF, ...saved}; S.sp = DEF.sp.map((d,i) => ({...d, ...((saved.sp||[])[i]||{})})); S.av = DEF.av.map((d,i) => (saved.av||[])[i] || null); if (!saved.v3) { S.fontSize = 23; S.srcSize = 20; } } } catch(e){}
 S.v3 = true; S.borderW = 0; S.wm = '';
-if (!['none','log','report','naval','comms','grid','ticket','stars','intercept','void','wanted','geiger','letter','postcard','herbarium','folder','book'].includes(S.deco)) S.deco = 'none';
+if (!['none','log','report','naval','comms','grid','ticket','stars','intercept','void','wanted','geiger','letter','postcard','herbarium','folder','book','custom'].includes(S.deco)) S.deco = 'none';
 let bgImg = null, phImg = null, PREVIEW = false;
 
 /* ---------- build controls ---------- */
@@ -581,6 +592,7 @@ const SPC = {
 };
 // theme speaker colours never overwrite a speaker whose colours the user picked by hand
 function applySPC(k){ if (!SPC[k]) return; S.spcKey = k; S.sp = S.sp.map((sp, i) => sp.own ? sp : ({...sp, ...SPC[k][i]})); }
+const FRAME_SAMPLE = '<style>\n.f{position:absolute;inset:0;padding:56px;box-sizing:border-box;display:flex;flex-direction:column}\n.f header{display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:16px;border-bottom:3px solid var(--fg);font:700 15px monospace;letter-spacing:.24em;color:var(--fg)}\n.f header b{color:var(--accent)}\n.f .txt{flex:1;margin:44px 20px}\n.f footer{display:flex;justify-content:space-between;font:500 13px monospace;letter-spacing:.2em;color:var(--muted)}\n.f .dot{width:12px;height:12px;border-radius:50%;background:var(--accent);display:inline-block;margin-right:10px}\n</style>\n<div class="f">\n  <header><span><i class="dot"></i>FREE FRAME</span><b>{today}</b></header>\n  <div class="txt" data-text></div>\n  <footer><span>NO. 001</span><span>{size}</span></footer>\n</div>';
 const LAYOUTS = [
   {grp:'TEXT ONLY'},
   {id:'basic', l:'기본 발췌', s:{ratio:'4:5', w:1080, h:1350, autoH:false, align:'left', valign:'center', lineH:1.8, pad:96, indent:false, divider:'short', srcAlign:'right', deco:'none', borderW:0}},
@@ -589,6 +601,7 @@ const LAYOUTS = [
   {id:'script', l:'대본집', s:{ratio:'custom', w:1080, autoH:true, align:'justify', valign:'top', lineH:2.05, pad:130, indent:false, divider:'none', srcAlign:'right', deco:'none', borderW:0, chatStyle:'script', scriptGut:5.5, scriptQuote:true, trParen:true, chatGap:0.9}},
   {grp:'FRAME'},
   {id:'noframe', l:'없음', s:{deco:'none'}},
+  {id:'custom', l:'자유 HTML', s:{deco:'custom'}},
   {grp:'LEO · LEGION × ORCA'},
   {id:'log', spc:'aquila', l:'항해일지', s:{...th('aquila'), ratio:'4:5', w:1080, h:1350, autoH:false, align:'left', valign:'center', lineH:1.9, pad:110, indent:false, divider:'short', srcAlign:'right', deco:'log', borderW:0}},
   {id:'report', spc:'aquila', l:'보고서', s:{...th('aquila'), ratio:'4:5', w:1080, h:1350, autoH:false, align:'left', valign:'center', lineH:1.85, pad:120, indent:false, divider:'short', srcAlign:'right', deco:'report', borderW:0}},
@@ -624,6 +637,7 @@ function icon(id){
     report: fr() + `<rect x="5" y="4" width="30" height="38" fill="none" stroke="${k}" stroke-width=".5" opacity=".5"/><rect x="8" y="1" width="12" height="2" fill="#fff"/><rect x="9" y="1.6" width="10" height="1" fill="${k}"/><rect x="24" y="40" width="10" height="4.5" rx="1" fill="#fff" stroke="var(--blue)" stroke-width=".8" transform="rotate(-6 29 42)"/>` + txt(10, 16, 20, 4),
     naval: fr() + `<path d="M37 9C33 9 30 6 30 2M37 15C31 15 25 10 25 2M37 21C29 21 20 14 20 2" fill="none" stroke="${mt}" stroke-width=".7"/><path d="M3 37C7 37 10 40 10 44M3 31C9 31 15 36 15 44" fill="none" stroke="${mt}" stroke-width=".7"/>` + txt(10, 17, 18, 3) + `<circle cx="30" cy="37" r="3" fill="none" stroke="${k}" stroke-width=".6"/><path d="M30 33L31 37L30 41L29 37Z" fill="${k}"/>`,
     comms: `<rect x="3" y="2" width="34" height="42" fill="#fff"/><path d="M3 9V2h7M30 2h7v7M3 37v7h7M37 37v7h-7" fill="none" stroke="${k}" stroke-width="1.4"/><circle cx="13" cy="2" r="1.2" fill="var(--blue)"/>` + [0,1,2,3].map(i => `<rect x="${28+i*1.8}" y="${2-i*0.6}" width="1.2" height="${1+i*0.6}" fill="${mt}"/>`).join('') + txt(9, 16, 22, 4) + Array.from({length: 10}, (_, i) => `<rect x="${11+i*2}" y="${44-Math.abs(Math.sin(i))*2}" width="1" height="${Math.abs(Math.sin(i))*4+.6}" fill="${mt}"/>`).join(''),
+    custom: `<rect x="3" y="2" width="34" height="42" fill="#fff" stroke="${k}" stroke-width="1"/><text x="20" y="27" font-size="10" font-family="monospace" font-weight="700" text-anchor="middle" fill="var(--blue)">&lt;/&gt;</text>`,
     noframe: `<rect x="3" y="2" width="34" height="42" fill="#fff" stroke="${k}" stroke-width="1" stroke-dasharray="2 2" opacity=".6"/><path d="M14 17L26 29M26 17L14 29" stroke="${k}" stroke-width="1.2" opacity=".55"/>`,
     ticket: `<path d="M3 13h24a2.4 2.4 0 0 0 4.8 0H37v20h-5.2a2.4 2.4 0 0 0-4.8 0H3z" fill="#fff" stroke="${k}" stroke-width="1"/><path d="M29.4 16v14" stroke="${k}" stroke-width=".6" stroke-dasharray="1.2 1.1"/><rect x="6" y="15.5" width="8" height="1.4" fill="var(--blue)"/>` + L(6, 20, 18) + L(6, 24, 14) + L(6, 28, 16) + [0,1,2,3,4,5].map(i => `<rect x="${31.5+i*.8}" y="26" width="${i%3 ? .35 : .6}" height="4" fill="${k}"/>`).join('') + `<rect x="31.5" y="17" width="4" height="1" fill="${k}" opacity=".6"/><rect x="31.5" y="20" width="3" height="1" fill="${k}" opacity=".6"/>`,
     stars: `<rect x="3" y="2" width="34" height="42" fill="#fff" stroke="${k}" stroke-width=".4" opacity=".7"/><path d="M6 6L11 8L14 5L18 9" fill="none" stroke="${mt}" stroke-width=".5"/><path d="M24 39L28 36L32 40L35 37" fill="none" stroke="${mt}" stroke-width=".5"/>` + [[6,6],[11,8],[14,5],[18,9],[24,39],[28,36],[32,40],[35,37]].map(([x,y]) => `<circle cx="${x}" cy="${y}" r=".9" fill="${k}"/>`).join('') + `<path d="M33 6a3 3 0 1 0 2 5a2.4 2.4 0 1 1-2-5z" fill="${mt}"/>` + L(12, 19, 16) + L(10, 24, 20) + L(13, 29, 14),
@@ -702,7 +716,8 @@ function syncUI(){
   $$('.chat-log').forEach(e => e.hidden = S.chatStyle !== 'log');
   syncSp();
   $$('.src-opt').forEach(e => e.hidden = S.srcOn === false);
-  $$('.deco-on').forEach(e => e.hidden = S.deco === 'none');
+  $$('.deco-on').forEach(e => e.hidden = S.deco === 'none' || S.deco === 'custom');
+  $$('.deco-custom').forEach(e => e.hidden = S.deco !== 'custom');
   { const miss = ['intercept','void','wanted','geiger'].includes(S.deco), dark = S.bg === THEMES.aftermess.bg;
     $$('.miss-only').forEach(e => e.hidden = !miss);
     $$('#missTone button').forEach(b => b.classList.toggle('on', (b.dataset.v === 'dark') === dark)); }
@@ -1192,9 +1207,47 @@ function ftGet(d, k, W, H){
   const v = S.ft && S.ft[d] && S.ft[d][k] !== undefined ? S.ft[d][k] : spec ? spec[2] : '';
   return ftTokens(v, W, H);
 }
+/* free HTML frame: rendered in an isolated iframe, captured with html2canvas */
+const fcache = new Map(); let frameLast = null;
+const frameKey = (W, H) => [S.frameHtml, Math.round(W), Math.round(H), S.bg, S.fg, S.accent, S.dlg, S.divColor, S.srcColor, S.hl, S.font, today()].join('\u0001');
+function frameFor(W, H){
+  const k = frameKey(W, H); let e = fcache.get(k);
+  if (e) { e.t = Date.now(); return e; }
+  e = {state: 'pending', t: Date.now(), W, H}; fcache.set(k, e);
+  setTimeout(async () => {
+    if (fcache.get(k) !== e) return;
+    const fr = document.createElement('iframe');
+    fr.setAttribute('aria-hidden', 'true'); fr.tabIndex = -1;
+    fr.style.cssText = `position:fixed;left:-100000px;top:0;width:${W}px;height:${H}px;border:0;pointer-events:none`;
+    const links = [...document.querySelectorAll('link[rel=stylesheet]')].map(l => `<link rel="stylesheet" href="${l.href}">`).join('');
+    const vars = `--bg:${S.bg};--fg:${S.fg};--accent:${S.accent};--blue:${S.dlg};--green:${S.divColor};--muted:${S.srcColor};--hl:${S.hl}`;
+    fr.srcdoc = `<!doctype html><html><head><meta charset="utf-8">${links}<style>:root{${vars}}html,body{margin:0;width:${W}px;height:${H}px;overflow:hidden;background:transparent}body{position:relative;font-family:"${S.font}",sans-serif;color:${S.fg}}</style></head><body>${ftTokens(S.frameHtml || '', W, H)}</body></html>`;
+    document.body.appendChild(fr);
+    try {
+      await new Promise(r => { fr.onload = r; setTimeout(r, 4000); });
+      const d = fr.contentDocument; try { await Promise.race([d.fonts.ready, new Promise(r => setTimeout(r, 2500))]); } catch(_){}
+      const t = d.querySelector('[data-text]');
+      if (t) { const r = t.getBoundingClientRect(); e.box = {top: r.top, left: r.left, right: W - r.right, bot: H - r.bottom}; }
+      frameLast = {W, H, box: e.box || null};
+      if (typeof html2canvas !== 'function') e.state = 'nolib';
+      else { e.c = await html2canvas(d.body, {backgroundColor: null, scale: 2, useCORS: true, logging: false, width: W, height: H, windowWidth: W, windowHeight: H}); e.state = 'ok'; }
+    } catch(err) { e.state = 'err'; }
+    fr.remove();
+    for (const [kk, v] of fcache) if (v !== e && Date.now() - v.t > 15000) fcache.delete(kk);
+    schedule();
+  }, 250);
+  return e;
+}
+function frameBox(W, H){
+  if (!(S.frameHtml || '').trim()) return null;
+  const e = fcache.get(frameKey(W, H || S.h));
+  if (e && e.state !== 'pending') return e.box || null;
+  return frameLast && frameLast.W === W ? frameLast.box : null;
+}
 function decoReserve(W, H){
   const u = Math.min(W, H || W*1.25)/1080, m = 40*u;
   if (S.deco === 'none') return {top: 0, bot: 0};
+  if (S.deco === 'custom') { const b = frameBox(W, H); return b ? {...b, box: true} : {top: S.frameTop || 0, bot: S.frameBot || 0, left: S.frameSide || 0, right: S.frameSide || 0, add: true}; }
   if (S.deco === 'grid') return {top: m + 76*u, bot: m + 120*u};
   if (S.deco === 'ticket') return H && W > H ? {top: m + 96*u, bot: m + 60*u, right: m + 380*u + 56*u} : {top: m + 96*u, bot: m + 150*u};
   if (S.deco === 'intercept') return {top: m + 132*u, bot: m + 84*u};
@@ -1229,6 +1282,11 @@ function T(ctx, str, x, y, o){
 }
 function drawDeco(ctx, W, H, layer, tl){
   const d = S.deco; if (d === 'none') return;
+  if (d === 'custom') {
+    if (!(S.frameHtml || '').trim() || layer !== (S.frameLayer || 'under')) return;
+    const e = frameFor(W, H); if (e.state === 'ok' && e.c) ctx.drawImage(e.c, 0, 0, W, H);
+    return;
+  }
   const u = Math.min(W, H)/1080, m = 40*u;
   const ink = S.fg, acc = S.accent, mint = S.divColor, mut = S.srcColor, paper = S.bg;
   const F = k => ftGet(d, k, W, H);
@@ -2168,14 +2226,17 @@ function render(cv, scale){
   }
   const AUTO = S.autoH || S.mode === 'blocks';
   const R = decoReserve(W, AUTO ? null : S.h);
-  if (R.right) tw = Math.min(tw, W - R.right - tx);
+  if (R.box && !side) { tx = R.left; tw = W - R.left - R.right; }
+  else if (R.add) { if (!side) { tx += R.left; tw -= R.left + R.right; } R.top += P; R.bot += P; R.right = R.right ? R.right + P : 0; }
+  else if (R.right) tw = Math.min(tw, W - R.right - tx);
   const framed = S.deco !== 'none' && hasPh && !side;   // photo goes inside the frame, aligned to the text column
   if (hasPh && !side) {
     const used = (framed ? (pos === 'top' ? R.top : R.bot) : O) + S.photoH + gap;
     if (pos === 'top') topOff = used; else botOff = used;
   }
   const L = layout(ctx, {x: tx, w: Math.max(60, tw)});
-  topOff = Math.max(topOff, R.top); botOff = Math.max(botOff, R.bot);
+  if (R.box) { topOff = (hasPh && !side && pos === 'top' ? topOff - P : 0) + R.top; botOff = (hasPh && !side && pos === 'bottom' ? botOff - P : 0) + R.bot; }
+  else { topOff = Math.max(topOff, R.top); botOff = Math.max(botOff, R.bot); }
   const H = AUTO ? Math.max(200, Math.round(L.h + topOff + botOff)) : S.h;
   cv.width = Math.round(W*scale); cv.height = Math.round(H*scale);
   ctx.setTransform(scale, 0, 0, scale, 0, 0);
@@ -2275,6 +2336,9 @@ function schedule(){
     $('#count').textContent = `${[...txt.replace(MARK_RE,'').replace(/^\[(?:>{1,3}|[ xX])\]\s?/gm,'')].length.toLocaleString()}자`;
     $('#over').hidden = !r.over;
     refreshSpk();
+    if (S.deco === 'custom') { const st = $('#frameStat'), e = (S.frameHtml || '').trim() ? fcache.get(frameKey(r.W, r.H)) : null;
+      st.textContent = !(S.frameHtml || '').trim() ? 'HTML을 넣으면 적용돼요' : !e || e.state === 'pending' ? '그리는 중…' : e.state === 'nolib' ? 'HTML 렌더러를 못 불러왔어요 (인터넷 연결 확인)' : e.state === 'err' ? '그리지 못했어요 · HTML을 확인해 주세요' : e.box ? '적용됨 · data-text 칸에 글이 들어가요' : '적용됨 · data-text 칸이 없어서 여백 슬라이더를 써요';
+      $('.frame-pad').hidden = !!(e && e.box); }
     persist();
   });
 }
@@ -2578,6 +2642,7 @@ $('#ftBox').addEventListener('input', e => {
   const k = e.target.dataset.ft; if (!k) return;
   S.ft = S.ft || {}; S.ft[S.deco] = S.ft[S.deco] || {}; S.ft[S.deco][k] = e.target.value; schedule();
 });
+$('#frameSample').addEventListener('click', () => { if ((S.frameHtml || '').trim() && !confirm('지금 HTML을 예시로 바꿀까요?')) return; S.frameHtml = FRAME_SAMPLE; $('[data-k=frameHtml]').value = S.frameHtml; schedule(); });
 $('#ftReset').addEventListener('click', () => { if (S.ft) delete S.ft[S.deco]; renderFT(); schedule(); toast('이 프레임 문구를 기본값으로 돌렸어요'); });
 
 /* ---------- background image ---------- */
