@@ -405,6 +405,7 @@ textarea.code{font:12.5px/1.55 var(--mono);background-image:none;white-space:pre
     </details>
     <details class="sd"><summary>크기 · 간격 · 옵션</summary>
       <div class="rgrid"><div class="rng" data-range="chatScale|대사 크기|0.5|1.3|0.01|x"></div><div class="rng" data-range="chatGap|대사 간격|0.2|2.5|0.05|x"></div><div class="rng chat-bub chat-av" data-range="chatAv|프로필 크기|0.8|3|0.05|x"></div><div class="rng chat-sc" data-range="scriptGut|이름 칸 너비|3|10|0.5|x"></div></div>
+      <div class="tgs chat-pl" style="margin-bottom:6px"><label class="tg"><input type="checkbox" data-k="plainColor"><i></i>대사를 화자 바 색으로</label><label class="tg"><input type="checkbox" data-k="plainHl"><i></i>대사에 화자 색 형광펜</label></div>
       <div class="tgs chat-sc" style="margin-bottom:6px"><label class="tg"><input type="checkbox" data-k="scriptColor"><i></i>이름에 화자 색</label>
         <label class="tg"><input type="checkbox" data-k="scriptQuote"><i></i>대사 따옴표</label></div>
       <div class="tgs"><label class="tg chat-bub"><input type="checkbox" data-k="chatAvOn"><i></i>프로필 사진 보이기</label><label class="tg"><input type="checkbox" data-k="trParen"><i></i>번역 줄 ( )로 감싸기</label></div>
@@ -551,7 +552,7 @@ const DEF = {
     {t:'div', ds:'short'},
     {t:'text', text:'> 블록마다 글자 크기와 정렬을 따로 정할 수 있어요.', align:'', size:0, lh:0}
   ],
-  srcOn:true, frameHtml:'', frameLayer:'under', frameTop:0, frameBot:0, frameSide:0, chatStyle:'bubble', chatAvOn:true, sysScale:1, sysTone:'auto', sysColor:'#e0102a', logStart:'23:41:07', logTime:true, logBadge:'fill', logQuote:false, scriptGut:5.5, scriptColor:false, scriptQuote:false, trParen:true, chatScale:0.9, chatAv:1.6, chatGap:0.9,
+  srcOn:true, frameHtml:'', frameLayer:'under', frameTop:0, frameBot:0, frameSide:0, chatStyle:'bubble', chatAvOn:true, plainColor:false, plainHl:false, sysScale:1, sysTone:'auto', sysColor:'#e0102a', logStart:'23:41:07', logTime:true, logBadge:'fill', logQuote:false, scriptGut:5.5, scriptColor:false, scriptQuote:false, trParen:true, chatScale:0.9, chatAv:1.6, chatGap:0.9,
   sp:[{name:'화자 1',side:'left',bub:'#e6eefb',txt:'#0d2a4a',bar:'#2f6fd6'},{name:'화자 2',side:'right',bub:'#123a6b',txt:'#ffffff',bar:'#3cc8b0'},
       {name:'화자 3',side:'left',bub:'#e3f7f2',txt:'#0f3b46',bar:'#1f9e8a'},{name:'화자 4',side:'right',bub:'#dcecfa',txt:'#0d2a4a',bar:'#8fc3ea'},
       {name:'화자 5',side:'left',bub:'#eef3f8',txt:'#0d2a4a',bar:'#0d2a4a'},{name:'화자 6',side:'right',bub:'#e8f8f5',txt:'#0d2a4a',bar:'#6fd8c6'}],
@@ -712,6 +713,7 @@ function syncUI(){
   $$('.ph-v').forEach(e => e.hidden = !side);
   $$('.ph-h').forEach(e => e.hidden = side);
   $$('.chat-bub').forEach(e => e.hidden = S.chatStyle !== 'bubble');
+  $$('.chat-pl').forEach(e => e.hidden = S.chatStyle !== 'plain');
   $$('.chat-av').forEach(e => e.hidden = S.chatStyle !== 'bubble' || S.chatAvOn === false);
   $$('.chat-sc').forEach(e => e.hidden = S.chatStyle !== 'script');
   $$('.chat-log').forEach(e => e.hidden = S.chatStyle !== 'log');
@@ -935,7 +937,7 @@ function layout(ctx, box){
     return {lines, ls, w: Math.max(0, ...lines.map(l => l.w - ls))};
   }
   function pushLines(L, o, left, yy){
-    for (const l of L.lines) { items.push({k:'t', line:l, y: yy, lh:o.lh, size:o.size, align:o.align, color:o.color, alpha:o.alpha ?? 1, left, ls: L.ls, body:!!o.body}); yy += o.lh; }
+    for (const l of L.lines) { items.push({k:'t', line:l, y: yy, lh:o.lh, size:o.size, align:o.align, color:o.color, alpha:o.alpha ?? 1, hlc:o.hlc, left, ls: L.ls, body:!!o.body}); yy += o.lh; }
     return yy;
   }
   function addText(str, o){
@@ -983,7 +985,7 @@ function layout(ctx, box){
     }
     if (S.chatStyle === 'plain') {
       const ind = S.indent && (S.align === 'left' || S.align === 'justify') ? fs : 0;
-      addText(quoteWrap(text), {size: fs, lh: fs*S.lineH, align: S.align, color: S.fg, dlg: S.dlgOn, indent: ind, body: true});
+      addText(quoteWrap(text), {size: fs, lh: fs*S.lineH, align: S.align, color: S.plainColor ? sp.bar : S.fg, dlg: S.plainColor ? false : S.dlgOn, indent: ind, body: true, hlc: S.plainHl ? sp.bar : null});
       return;
     }
     if (SC) {
@@ -2181,6 +2183,12 @@ function drawLine(ctx, it, y0){
   const xs = []; let cx = x;
   items.forEach(c => { xs.push(cx); cx += c.w + (c.sp ? perSp : 0) + perCh; });
 
+  if (it.hlc) {   // whole-line marker in the speaker's colour
+    let i0 = 0, i1 = items.length - 1;
+    while (i0 <= i1 && items[i0].sp) i0++; while (i1 >= i0 && items[i1].sp) i1--;
+    if (i0 <= i1) { ctx.save(); ctx.globalAlpha = 0.26 * it.alpha; ctx.fillStyle = it.hlc;
+      const x1 = xs[i0] - size*0.08, x2 = xs[i1] + items[i1].w - ls + size*0.08; ctx.fillRect(x1, cy - size*0.12, x2 - x1, size*0.62); ctx.restore(); }
+  }
   ctx.save(); ctx.globalAlpha = S.hlAlpha * it.alpha; ctx.fillStyle = S.hl;
   for (let i = 0; i < items.length; ) {
     if (!items[i].h) { i++; continue; }
@@ -2717,7 +2725,7 @@ function buildHTML(fragment){
       const sp = t.n >= 0 ? S.sp[t.n] : null;
       if (t.k === 'chat' && S.chatStyle === 'plain') {
         const ind = S.indent && (align === 'left' || align === 'justify') ? 'text-indent:1em;' : '';
-        h += `<p${align === 'justify' ? ' class="j"' : ''} style="${mt}text-align:${align};${ind}">${inl(quoteWrap(t.text), S.dlgOn)}</p>`;
+        h += `<p${align === 'justify' ? ' class="j"' : ''} style="${mt}text-align:${align};${ind}${S.plainColor ? `color:${sp.bar};` : ''}">${S.plainHl ? `<span style="background:linear-gradient(transparent 40%,${rgba(sp.bar, 0.26)} 40%,${rgba(sp.bar, 0.26)} 96%,transparent 96%);-webkit-box-decoration-break:clone;box-decoration-break:clone">` : ''}${inl(quoteWrap(t.text), S.plainColor ? false : S.dlgOn)}${S.plainHl ? '</span>' : ''}</p>`;
       } else if (t.k === 'chat' && SCx) {
         const nm = t.cont || !nameOf(sp) ? '' : `<span class="nm" style="${S.scriptColor ? `color:${sp.bar}` : ''}">${E(nameOf(sp))}</span>`;
         h += `<div class="sc" style="${mt}">${nm}<p>${inl(S.scriptQuote ? quoteWrap(t.text) : t.text, S.dlgOn)}</p></div>`;
