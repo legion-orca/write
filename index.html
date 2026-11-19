@@ -404,10 +404,10 @@ textarea.code{font:12.5px/1.55 var(--mono);background-image:none;white-space:pre
     </div>
     </details>
     <details class="sd"><summary>크기 · 간격 · 옵션</summary>
-      <div class="rgrid"><div class="rng" data-range="chatScale|대사 크기|0.5|1.3|0.01|x"></div><div class="rng" data-range="chatGap|대사 간격|0.2|2.5|0.05|x"></div><div class="rng chat-bub" data-range="chatAv|프로필 크기|0.8|3|0.05|x"></div><div class="rng chat-sc" data-range="scriptGut|이름 칸 너비|3|10|0.5|x"></div></div>
+      <div class="rgrid"><div class="rng" data-range="chatScale|대사 크기|0.5|1.3|0.01|x"></div><div class="rng" data-range="chatGap|대사 간격|0.2|2.5|0.05|x"></div><div class="rng chat-bub chat-av" data-range="chatAv|프로필 크기|0.8|3|0.05|x"></div><div class="rng chat-sc" data-range="scriptGut|이름 칸 너비|3|10|0.5|x"></div></div>
       <div class="tgs chat-sc" style="margin-bottom:6px"><label class="tg"><input type="checkbox" data-k="scriptColor"><i></i>이름에 화자 색</label>
         <label class="tg"><input type="checkbox" data-k="scriptQuote"><i></i>대사 따옴표</label></div>
-      <div class="tgs"><label class="tg"><input type="checkbox" data-k="trParen"><i></i>번역 줄 ( )로 감싸기</label></div>
+      <div class="tgs"><label class="tg chat-bub"><input type="checkbox" data-k="chatAvOn"><i></i>프로필 사진 보이기</label><label class="tg"><input type="checkbox" data-k="trParen"><i></i>번역 줄 ( )로 감싸기</label></div>
     </details>
     <details class="sd"><summary>알림 줄 ([s])</summary>
       <div class="rng" data-range="sysScale|알림 글자 크기|0.6|1.8|0.02|x"></div>
@@ -551,7 +551,7 @@ const DEF = {
     {t:'div', ds:'short'},
     {t:'text', text:'> 블록마다 글자 크기와 정렬을 따로 정할 수 있어요.', align:'', size:0, lh:0}
   ],
-  srcOn:true, frameHtml:'', frameLayer:'under', frameTop:0, frameBot:0, frameSide:0, chatStyle:'bubble', sysScale:1, sysTone:'auto', sysColor:'#e0102a', logStart:'23:41:07', logTime:true, logBadge:'fill', logQuote:false, scriptGut:5.5, scriptColor:false, scriptQuote:false, trParen:true, chatScale:0.9, chatAv:1.6, chatGap:0.9,
+  srcOn:true, frameHtml:'', frameLayer:'under', frameTop:0, frameBot:0, frameSide:0, chatStyle:'bubble', chatAvOn:true, sysScale:1, sysTone:'auto', sysColor:'#e0102a', logStart:'23:41:07', logTime:true, logBadge:'fill', logQuote:false, scriptGut:5.5, scriptColor:false, scriptQuote:false, trParen:true, chatScale:0.9, chatAv:1.6, chatGap:0.9,
   sp:[{name:'화자 1',side:'left',bub:'#e6eefb',txt:'#0d2a4a',bar:'#2f6fd6'},{name:'화자 2',side:'right',bub:'#123a6b',txt:'#ffffff',bar:'#3cc8b0'},
       {name:'화자 3',side:'left',bub:'#e3f7f2',txt:'#0f3b46',bar:'#1f9e8a'},{name:'화자 4',side:'right',bub:'#dcecfa',txt:'#0d2a4a',bar:'#8fc3ea'},
       {name:'화자 5',side:'left',bub:'#eef3f8',txt:'#0d2a4a',bar:'#0d2a4a'},{name:'화자 6',side:'right',bub:'#e8f8f5',txt:'#0d2a4a',bar:'#6fd8c6'}],
@@ -712,6 +712,7 @@ function syncUI(){
   $$('.ph-v').forEach(e => e.hidden = !side);
   $$('.ph-h').forEach(e => e.hidden = side);
   $$('.chat-bub').forEach(e => e.hidden = S.chatStyle !== 'bubble');
+  $$('.chat-av').forEach(e => e.hidden = S.chatStyle !== 'bubble' || S.chatAvOn === false);
   $$('.chat-sc').forEach(e => e.hidden = S.chatStyle !== 'script');
   $$('.chat-log').forEach(e => e.hidden = S.chatStyle !== 'log');
   syncSp();
@@ -961,7 +962,7 @@ function layout(ctx, box){
       const inset = fs*1.05, L = mkLines(text, o, cw - inset);
       y = pushLines(L, o, right ? pad : pad + inset, y); return;
     }
-    const A = fs*S.chatAv*0.9, ag = fs*0.45, maxB = Math.max(cs*4, (cw - A - ag)*0.82), L = mkLines(text, o, maxB);
+    const AV = S.chatAvOn !== false, A = AV ? fs*S.chatAv*0.9 : 0, ag = AV ? fs*0.45 : 0, maxB = Math.max(cs*4, (cw - A - ag)*0.82), L = mkLines(text, o, maxB);
     y = pushLines(L, o, right ? pad + cw - A - ag - maxB - cs*0.3 : pad + A + ag + cs*0.3, y);
   }
   function addChat(n, text, cont, time, div, gap){
@@ -1002,7 +1003,7 @@ function layout(ctx, box){
       items.push({k:'bar', x: right ? pad + cw - fs*0.3 - bw : pad + fs*0.3, y: start + trim*0.55, w: bw, h: y - start - trim*1.1, color: sp.bar, alpha: 0.95});
       return;
     }
-    const A = fs*S.chatAv*0.9, ag = fs*0.45, px = cs*0.75, py = cs*0.5, lh = cs*1.5;
+    const AV = S.chatAvOn !== false, A = AV ? fs*S.chatAv*0.9 : 0, ag = AV ? fs*0.45 : 0, px = cs*0.75, py = cs*0.5, lh = cs*1.5;
     const maxB = Math.max(cs*4, (cw - A - ag)*0.82);
     const o = {size: cs, lh, align: 'left', color: sp.txt, dlg: S.dlgOn};
     const L = mkLines(text, o, maxB - 2*px);
@@ -1010,7 +1011,7 @@ function layout(ctx, box){
     const bx = right ? pad + cw - A - ag - bw : pad + A + ag;
     let top = y;
     if (!cont) {
-      items.push({k:'av', x: right ? pad + cw - A : pad, y, s: A, i: n});
+      if (AV) items.push({k:'av', x: right ? pad + cw - A : pad, y, s: A, i: n});
       if (nameOf(sp)) {
         const ns = cs*0.68, nl = ns*1.5;
         const no = {size: ns, lh: nl, align: right ? 'right' : 'left', color: S.srcColor, plain: true, bold: true};
@@ -2731,19 +2732,19 @@ function buildHTML(fragment){
         h += `<p style="${mt}font-size:${e(cs)};line-height:${Math.min(lh, 1.75)};${r ? `text-align:right;border-right:${px(bw)} solid ${sp.bar};padding-right:${e(fs*1.05 - bw, cs)}` : `border-left:${px(bw)} solid ${sp.bar};padding-left:${e(fs*1.05 - bw, cs)}`}">${inl(t.text, S.dlgOn)}</p>`;
       } else if (t.k === 'chat') {
         const r = sp.side === 'right', cs = fs*S.chatScale, A = fs*S.chatAv*0.9, rr = fs*0.75, sm = fs*0.15;
-        const av = t.cont ? `<span style="width:${e(A)};flex:none"></span>`
+        const av = S.chatAvOn === false ? '' : t.cont ? `<span style="width:${e(A)};flex:none"></span>`
           : S.av[t.n] ? `<img src="${S.av[t.n]}" alt="" style="width:${e(A)};height:${e(A)};border-radius:50%;object-fit:cover;flex:none">`
           : `<span class="av" style="width:${e(A, A*0.42)};height:${e(A, A*0.42)};background:${sp.bar};font-size:${e(A*0.42)}">${E([...(nameOf(sp) || String(t.n+1))][0])}</span>`;
         const name = t.cont || !nameOf(sp) ? '' : `<span class="mn" style="font-size:${e(cs*0.68)}">${E(nameOf(sp))}</span>`;
         const R = v => e(v, cs), rad = t.cont ? R(rr) : r ? `${R(rr)} ${R(sm)} ${R(rr)} ${R(rr)}` : `${R(sm)} ${R(rr)} ${R(rr)} ${R(rr)}`;
-        h += `<div class="msg${r ? ' r' : ''}" style="${mt}gap:.45em">${av}<div class="mb">${name}<p class="bb" style="background:${sp.bub};color:${sp.txt};font-size:${e(cs)};padding:.5em .75em;border-radius:${rad}">${inl(t.text, S.dlgOn)}</p></div></div>`;
+        h += `<div class="msg${r ? ' r' : ''}" style="${mt}gap:${S.chatAvOn === false ? 0 : '.45em'}">${av}<div class="mb">${name}<p class="bb" style="background:${sp.bub};color:${sp.txt};font-size:${e(cs)};padding:.5em .75em;border-radius:${rad}">${inl(t.text, S.dlgOn)}</p></div></div>`;
       } else if (t.k === 'tr') {
         if (SCx || !sp || S.chatStyle === 'plain') {
           const ind = !SCx && S.indent && (align === 'left' || align === 'justify') ? 'text-indent:1em;' : '';
           h += `<p${!SCx && align === 'justify' ? ' class="j"' : ''} style="${mt}color:${S.srcColor};${SCx ? '' : `text-align:${align};`}${ind}">${inl(parenWrap(t.text), false)}</p>`;
         }
         else {
-          const LG = S.chatStyle === 'log', r = sp.side === 'right' && !LG, cs = fs*S.chatScale*0.85, off = LG ? logDims(fs).timeW : S.chatStyle === 'bar' ? fs*1.05 : fs*S.chatAv*0.9 + fs*0.45 + cs*0.3;
+          const LG = S.chatStyle === 'log', r = sp.side === 'right' && !LG, cs = fs*S.chatScale*0.85, off = LG ? logDims(fs).timeW : S.chatStyle === 'bar' ? fs*1.05 : (S.chatAvOn === false ? 0 : fs*S.chatAv*0.9 + fs*0.45) + cs*0.3;
           h += `<p${LG ? ' class="li"' : ''} style="${mt}font-size:${e(cs)};line-height:1.5;color:${S.srcColor};${r ? `text-align:right;padding-right:${e(off, cs)}` : `padding-left:${e(off, cs)}`}">${inl(parenWrap(t.text), false)}</p>`;
         }
       } else if (t.k === 'sys' && S.chatStyle === 'log') {
