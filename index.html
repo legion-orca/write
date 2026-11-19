@@ -389,6 +389,7 @@ input[type=range]:focus-visible::-webkit-slider-thumb{border-color:var(--mint)}
         <label class="sw chat-bub"><input type="color" data-sp="txt"><span>말풍선 글자</span></label>
         <label class="sw"><input type="color" data-sp="bar"><span>바 · 아이콘</span></label>
       </div>
+      <p class="sub sp-own" style="margin:8px 0 0">이 화자는 직접 고른 색이라 레이아웃·테마를 바꿔도 그대로 남아요. <button type="button" class="linkbtn" id="spReset">테마 색으로 되돌리기</button> · <button type="button" class="linkbtn" id="spResetAll">모든 화자 되돌리기</button></p>
     </div>
     </details>
     <details class="sd"><summary>크기 · 간격 · 옵션</summary>
@@ -578,6 +579,8 @@ const SPC = {
   aftermess: [{bub:'#1c1f1e',txt:'#ececec',bar:'#4f9a76'},{bub:'#7a1420',txt:'#ffffff',bar:'#ff3b4a'},{bub:'#18244a',txt:'#e2e9fb',bar:'#6f95ff'},{bub:'#222222',txt:'#ececec',bar:'#8f949b'},{bub:'#15241d',txt:'#d8eee2',bar:'#2f6b52'},{bub:'#3a1418',txt:'#ffd9dd',bar:'#b0222f'}],
   y1995:     [{bub:'#e2eff6',txt:'#1f3b2d',bar:'#8fb9d1'},{bub:'#23553e',txt:'#f8f3e6',bar:'#23553e'},{bub:'#eee6d2',txt:'#3a3a2a',bar:'#b8a67e'},{bub:'#e1ece1',txt:'#1f3b2d',bar:'#6f9a7c'},{bub:'#f3efe2',txt:'#3a3a2a',bar:'#c9a86a'},{bub:'#dfeaf2',txt:'#1f3b2d',bar:'#3f7190'}]
 };
+// theme speaker colours never overwrite a speaker whose colours the user picked by hand
+function applySPC(k){ if (!SPC[k]) return; S.spcKey = k; S.sp = S.sp.map((sp, i) => sp.own ? sp : ({...sp, ...SPC[k][i]})); }
 const LAYOUTS = [
   {grp:'TEXT ONLY'},
   {id:'basic', l:'기본 발췌', s:{ratio:'4:5', w:1080, h:1350, autoH:false, align:'left', valign:'center', lineH:1.8, pad:96, indent:false, divider:'short', srcAlign:'right', deco:'none', borderW:0}},
@@ -659,7 +662,7 @@ $('#lays').addEventListener('click', e => {
   Object.assign(S, o.s, {layout: o.id});
     if (o.spc) S.accStyle = o.s.accStyle || 'color';
   if (o.spc === 'missLight' && S.missDark) Object.assign(S, th('aftermess'));
-  if (o.spc) { const k = o.spc === 'missLight' && S.missDark ? 'aftermess' : o.spc; S.sp = S.sp.map((sp, i) => ({...sp, ...SPC[k][i]})); }
+  if (o.spc) { const k = o.spc === 'missLight' && S.missDark ? 'aftermess' : o.spc; applySPC(k); }
   if (o.id !== 'script' && S.chatStyle === 'script') S.chatStyle = S.chatPrev && S.chatPrev !== 'script' ? S.chatPrev : 'bubble';
   syncUI(); ensureFont();
   toast(`‘${o.l}’ 레이아웃 적용`);
@@ -725,7 +728,7 @@ $('#themes').addEventListener('click', e => {
   const b = e.target.closest('[data-theme]'); if (!b) return;
   const {label, ...t} = THEMES[b.dataset.theme];
   Object.assign(S, t);
-  if (typeof SPC !== 'undefined' && SPC[b.dataset.theme]) S.sp = S.sp.map((sp, i) => ({...sp, ...SPC[b.dataset.theme][i]}));
+  if (typeof SPC !== 'undefined' && SPC[b.dataset.theme]) applySPC(b.dataset.theme);
   syncUI(); schedule();
 });
 
@@ -2491,6 +2494,7 @@ function syncSp(){
   if (tb.children.length !== N) tb.innerHTML = Array.from({length: N}, (_, i) => `<button type="button" data-i="${i}">P${i + 1}</button>`).join('');
   $('#spAdd').disabled = N >= 6; $('#spDel').disabled = N <= 1;
   const sp = S.sp[spI];
+  $('.sp-own').hidden = !sp.own;
   $$('#spTabs button').forEach(b => b.classList.toggle('on', +b.dataset.i === spI));
   $$('#spSide button').forEach(b => b.classList.toggle('on', b.dataset.v === sp.side));
   $$('[data-sp]').forEach(el => { if (document.activeElement !== el && el.value !== (sp[el.dataset.sp] ?? '')) el.value = sp[el.dataset.sp] ?? ''; });
@@ -2502,7 +2506,10 @@ $('#spAdd').addEventListener('click', () => { S.spN = Math.min(6, (S.spN || 4) +
 $('#spDel').addEventListener('click', () => { S.spN = Math.max(1, (S.spN || 4) - 1); syncSp(); schedule(); });
 $('#spTabs').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; spI = +b.dataset.i; syncSp(); });
 $('#spSide').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; S.sp[spI].side = b.dataset.v; syncSp(); schedule(); });
-$$('[data-sp]').forEach(el => el.addEventListener('input', () => { S.sp[spI][el.dataset.sp] = el.value; syncSp(); schedule(); }));
+$$('[data-sp]').forEach(el => el.addEventListener('input', () => { S.sp[spI][el.dataset.sp] = el.value; if (el.type === 'color') S.sp[spI].own = true; syncSp(); schedule(); }));
+const spBack = i => { const sp = S.sp[i]; sp.own = false; const set = SPC[S.spcKey || 'aquila']; if (set && set[i]) Object.assign(sp, set[i]); };
+$('#spReset').addEventListener('click', () => { spBack(spI); syncSp(); schedule(); });
+$('#spResetAll').addEventListener('click', () => { S.sp.forEach((_, i) => spBack(i)); syncSp(); schedule(); });
 $('#avFile').addEventListener('change', e => {
   const f = e.target.files[0]; if (!f) return; const i = spI;
   const rd = new FileReader();
@@ -2552,7 +2559,7 @@ $('#missTone').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
   const id = b.dataset.v === 'dark' ? 'aftermess' : 'missLight';
   S.missDark = id === 'aftermess';
-  Object.assign(S, th(id)); S.sp = S.sp.map((sp, i) => ({...sp, ...SPC[id][i]}));
+  Object.assign(S, th(id)); applySPC(id);
   syncUI(); schedule();
 });
 
